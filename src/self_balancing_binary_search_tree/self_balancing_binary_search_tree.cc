@@ -13,9 +13,9 @@ auto SBT::Bfactor(Node *p) -> int {
 }
 
 auto SBT::FixHeight(Node *p) -> void {
-  unsigned char hl = Height(p->left_);
-  unsigned char hr = Height(p->right_);
-  p->height_ = (hl > hr ? hl : hr) + 1;
+  unsigned char h_left = Height(p->left_);
+  unsigned char h_right = Height(p->right_);
+  p->height_ = (h_left > h_right ? h_left : h_right) + 1;
 }
 
 auto SBT::RotateRight(Node *p) -> Node * {

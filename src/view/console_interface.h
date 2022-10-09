@@ -5,7 +5,9 @@ namespace s21 {
 
 class MainWindow {
  public:
-  void Show();
+  auto Show() -> void;
+
+ private:
 };
 }  // namespace s21
 
