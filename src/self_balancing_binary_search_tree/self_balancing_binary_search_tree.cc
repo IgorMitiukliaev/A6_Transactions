@@ -4,7 +4,7 @@ using SBT = s21::SelfBalancingBinarySearchTree;
 
 SBT::SelfBalancingBinarySearchTree(s21::record_type record) {}
 
-auto SBT::Set(const record_type &) -> bool {}
+// auto SBT::Set(const record_type &) -> bool {}
 
 auto SBT::Height(Node *p) -> unsigned char { return p ? p->height_ : 0; };
 

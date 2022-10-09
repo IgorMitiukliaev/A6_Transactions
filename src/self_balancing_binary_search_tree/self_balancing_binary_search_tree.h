@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SRC_SELF_BALANCING_BINARY_SEARCH_TREE_SELF_BALANCING_BINARY_SEARCH_TREE_H_
+#define SRC_SELF_BALANCING_BINARY_SEARCH_TREE_SELF_BALANCING_BINARY_SEARCH_TREE_H_
 
 #include "../core/virtual_base.h"
 
@@ -50,3 +51,5 @@ class SelfBalancingBinarySearchTree : public BaseClass {
 };
 
 }  // namespace s21
+
+#endif  // SRC_SELF_BALANCING_BINARY_SEARCH_TREE_SELF_BALANCING_BINARY_SEARCH_TREE_H_

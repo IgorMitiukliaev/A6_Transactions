@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SRC_CORE_VIRTUAL_BASE_H_
+#define SRC_CORE_VIRTUAL_BASE_H_
 
 #include <cstddef>
 #include <string>
@@ -42,3 +43,5 @@ class BaseClass {
 };
 
 }  // namespace s21
+
+#endif  // SRC_CORE_VIRTUAL_BASE_H_

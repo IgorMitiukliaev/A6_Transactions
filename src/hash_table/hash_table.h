@@ -1,11 +1,12 @@
-#pragma once
+#ifndef SRC_HASH_TABLE_HASH_TABLE_H_
+#define SRC_HASH_TABLE_HASH_TABLE_H_
 
 #include "../core/virtual_base.h"
 
 namespace s21 {
 int HashFunctionHorner(const std::string &s, int table_size, const int key);
-int hash1(const std::string& s, int table_size);
-int hash2(const std::string& s, int table_size);
+int hash1(const std::string &s, int table_size);
+int hash2(const std::string &s, int table_size);
 
 template <class T>
 class HashTable : public BaseClass {
@@ -49,3 +50,5 @@ class HashTable : public BaseClass {
 };
 
 }  // namespace s21
+
+#endif  // SRC_HASH_TABLE_HASH_TABLE_H_
