@@ -1,5 +1,11 @@
 #include "console_interface.h"
 
-using s21::MainWindow;
+#include <memory>
 
-auto MainWindow::Show() -> void {}
+using s21::MainWindow;
+using Controller = s21::Controller;
+using BaseType = Controller::BaseType;
+
+MainWindow::MainWindow() { controller_ = std::make_unique<s21::Controller>(); };
+
+auto MainWindow::Show() -> void { controller_->Init(::Controller::HASH); };

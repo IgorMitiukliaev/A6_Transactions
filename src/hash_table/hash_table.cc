@@ -23,8 +23,8 @@ int s21::hash2(const std::string& s, int table_size) {
   return HashFunctionHorner(s, table_size, table_size + 1);
 };
 
-template <typename T>
-HashTable<T>::HashTable() {
+
+HashTable::HashTable() {
   buffer_size = default_size;
   size = 0;
   size_all_non_nullptr = 0;
@@ -34,15 +34,15 @@ HashTable<T>::HashTable() {
                        // и никто раньше по этому адресу не обращался
 }
 
-template <typename T>
-HashTable<T>::~HashTable() {
+
+HashTable::~HashTable() {
   for (int i = 0; i < buffer_size; ++i)
     if (arr[i]) delete arr[i];
   delete[] arr;
 }
 
-template <typename T>
-void HashTable<T>::Resize() {
+
+void HashTable::Resize() {
   int past_buffer_size = buffer_size;
   buffer_size *= 2;
   size_all_non_nullptr = 0;
@@ -60,8 +60,8 @@ void HashTable<T>::Resize() {
   delete[] arr2;
 }
 
-template <typename T>
-void HashTable<T>::Rehash() {
+
+void HashTable::Rehash() {
   size_all_non_nullptr = 0;
   size = 0;
   Node** arr2 = new Node*[buffer_size];
@@ -76,36 +76,36 @@ void HashTable<T>::Rehash() {
   delete[] arr2;
 }
 
-template <typename T>
-s21::key_type HashTable<T>::Find(const T& value) {
-  int h1 =
-      hash1(value, buffer_size);  // значение, отвечающее за начальную позицию
-  int h2 =
-      hash2(value, buffer_size);  // значение, ответственное за "шаг" по таблице
-  int i = 0;
-  while (arr[h1] != nullptr && i < buffer_size) {
-    if (arr[h1]->value == value && arr[h1]->state)
-      return true;  // такой элемент есть
-    h1 = (h1 + h2) % buffer_size;
-    ++i;  // если у нас i >=  buffer_size, значит мы уже обошли абсолютно все
-          // ячейки, именно для этого мы считаем i, иначе мы могли бы
-          // зациклиться.
-  }
-  return false;
-}
+// 
+// s21::key_type HashTable::Find(const T& value) {
+//   int h1 =
+//       hash1(value, buffer_size);  // значение, отвечающее за начальную позицию
+//   int h2 =
+//       hash2(value, buffer_size);  // значение, ответственное за "шаг" по таблице
+//   int i = 0;
+//   while (arr[h1] != nullptr && i < buffer_size) {
+//     if (arr[h1]->value == value && arr[h1]->state)
+//       return true;  // такой элемент есть
+//     h1 = (h1 + h2) % buffer_size;
+//     ++i;  // если у нас i >=  buffer_size, значит мы уже обошли абсолютно все
+//           // ячейки, именно для этого мы считаем i, иначе мы могли бы
+//           // зациклиться.
+//   }
+//   return false;
+// }
 
-template <typename T>
-bool HashTable<T>::Add(const T& value) {
+
+bool HashTable::Add(const key_type& key) {
   if (size + 1 > int(rehash_size * buffer_size))
     Resize();
   else if (size_all_non_nullptr > 2 * size)
     Rehash();  // происходит рехеш, так как слишком много deleted-элементов
-  int h1 = hash1(value, buffer_size);
-  int h2 = hash2(value, buffer_size);
+  int h1 = hash1(key, buffer_size);
+  int h2 = hash2(key, buffer_size);
   int i = 0;
   int first_deleted = -1;  // запоминаем первый подходящий (удаленный) элемент
   while (arr[h1] != nullptr && i < buffer_size) {
-    if (arr[h1]->value == value && arr[h1]->state)
+    if (arr[h1]->value == key && arr[h1]->state)
       return false;  // такой элемент уже есть, а значит его нельзя вставлять
                      // повторно
     if (!arr[h1]->state &&

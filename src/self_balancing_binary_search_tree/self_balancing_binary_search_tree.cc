@@ -1,22 +1,34 @@
 #include "self_balancing_binary_search_tree.h"
 
+
+using Node = class  s21::SelfBalancingBinarySearchTree::Node;
+
+
 using SBT = s21::SelfBalancingBinarySearchTree;
 
-SBT::SelfBalancingBinarySearchTree(s21::record_type record) {}
+
+SBT::SelfBalancingBinarySearchTree(s21::record_type &record) {
+  root = new Node(record);
+}
 
 // auto SBT::Set(const record_type &) -> bool {}
 
-auto SBT::Height(Node *p) -> unsigned char { return p ? p->height_ : 0; };
+auto SBT::Height(Node *p) -> unsigned char {
+  return p ? p->height_ : 0;
+};
+
 
 auto SBT::Bfactor(Node *p) -> int {
   return Height(p->right_) - Height(p->left_);
 }
+
 
 auto SBT::FixHeight(Node *p) -> void {
   unsigned char h_left = Height(p->left_);
   unsigned char h_right = Height(p->right_);
   p->height_ = (h_left > h_right ? h_left : h_right) + 1;
 }
+
 
 auto SBT::RotateRight(Node *p) -> Node * {
   Node *q = p->left_;
@@ -27,6 +39,7 @@ auto SBT::RotateRight(Node *p) -> Node * {
   return q;
 }
 
+
 auto SBT::RotateLeft(Node *q) -> Node * {
   Node *p = q->right_;
   q->right_ = p->left_;
@@ -35,6 +48,7 @@ auto SBT::RotateLeft(Node *q) -> Node * {
   FixHeight(p);
   return p;
 }
+
 
 auto SBT::Balance(Node *p) -> Node * {
   FixHeight(p);
@@ -49,18 +63,21 @@ auto SBT::Balance(Node *p) -> Node * {
   return p;
 }
 
-auto SBT::Insert(Node *p, key_type k) -> Node * {
+
+auto SBT::Insert(Node *p, record_type k) -> Node * {
   if (!p) return new Node(k);
-  if (k < p->key_)
+  if (k.first < p->key_)
     p->left_ = Insert(p->left_, k);
   else
     p->right_ = Insert(p->right_, k);
   return Balance(p);
 }
 
+
 auto SBT::FindMin(Node *p) -> Node * {
   return p->left_ ? FindMin(p->left_) : p;
 }
+
 
 auto SBT::RemoveMin(Node *p) -> Node * {
   if (p->left_ == 0) return p->right_;
@@ -68,7 +85,8 @@ auto SBT::RemoveMin(Node *p) -> Node * {
   return Balance(p);
 }
 
-auto SBT ::Remove(Node *p, key_type k) -> Node * {
+
+auto SBT::Remove(Node *p, key_type k) -> Node * {
   if (!p) return 0;
   if (k < p->key_)
     p->left_ = Remove(p->left_, k);

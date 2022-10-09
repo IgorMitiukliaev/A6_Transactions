@@ -1,13 +1,19 @@
 #ifndef SRC_VIEW_CONSOLE_INTERFACE_H_
 #define SRC_VIEW_CONSOLE_INTERFACE_H_
 
-namespace s21 {
+#include <memory>
 
+#include "../controller/controller.h"
+
+namespace s21 {
 class MainWindow {
  public:
+  MainWindow();
+  ~MainWindow() = default;
   auto Show() -> void;
 
  private:
+  std::unique_ptr<Controller> controller_ = nullptr;
 };
 }  // namespace s21
 
