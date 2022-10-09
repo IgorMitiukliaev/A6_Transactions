@@ -3,9 +3,21 @@
 #include "../core/virtual_base.h"
 
 namespace s21 {
-
 class SelfBalancingBinarySearchTree : public BaseClass {
  public:
+  struct Node {
+    Node() = delete;
+    key_type key_;
+    Person data_;
+    unsigned char height_;
+    Node *left_;
+    Node *right_;
+    Node(key_type k) : key_{k}, left_{0}, right_(0), height_{1} {}
+  };
+
+  SelfBalancingBinarySearchTree() = delete;
+  explicit SelfBalancingBinarySearchTree(record_type record);
+  ~SelfBalancingBinarySearchTree();
   auto Set(const record_type &) -> bool;
   auto Get(const key_type &) -> record_type &;
   auto Exist(const key_type &) -> bool;
@@ -19,6 +31,22 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
+
+ private:
+  Node *root;
+  inline auto Height(Node *p) -> unsigned char;
+  inline auto Bfactor(Node *p) -> int;
+  inline auto FixHeight(Node *p) -> void;
+  auto RotateRight(Node *p) -> Node *;  // правый поворот вокруг p
+  auto RotateLeft(Node *p) -> Node *;  // левый поворот вокруг p
+  auto Balance(Node *p) -> Node *;     // балансировка узла p
+  auto Insert(Node *p, key_type k)
+      -> Node *;  // вставка ключа k в дерево с корнем p
+  auto FindMin(Node *p)
+      -> Node *;  // поиск узла с минимальным ключом в дереве p
+  auto RemoveMin(Node *p)
+      -> Node *;  // удаление узла с минимальным ключом из дерева p
+  auto Remove(Node *p, key_type k) -> Node *;  // удаление ключа k из дерева p
 };
 
 }  // namespace s21

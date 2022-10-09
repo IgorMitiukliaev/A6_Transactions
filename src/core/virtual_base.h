@@ -6,10 +6,7 @@
 namespace s21 {
 
 class BaseClass;
-class SelfBalancingBinarySearchTree;
-
 using key_type = std::string;
-using SBT = SelfBalancingBinarySearchTree;
 
 class Person {
  private:
