@@ -29,7 +29,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
-  auto Keys() -> void;
+  auto Keys() -> std::vector<key_type>;
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
   auto Find(const Person &) -> std::vector<key_type>;
@@ -57,6 +57,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
       -> Node *;  // удаление узла с минимальным ключом из дерева p
   auto Remove(Node *p, key_type k) -> Node *;  // удаление ключа k из дерева p
   auto FindRecord(Node *p, key_type k) -> Node *;
+  auto preOrder(Node *p, std::vector<key_type> &res) -> void;
 };
 
 }  // namespace s21

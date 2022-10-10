@@ -1,6 +1,7 @@
 #include "self_balancing_binary_search_tree.h"
 
 #include <cstddef>
+#include <vector>
 
 using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
@@ -127,9 +128,35 @@ auto SBT::Del(const key_type &k) -> bool {
   return res;
 };
 
-auto SBT::Update(const record_type &) -> bool { return true; };
-auto SBT::Keys() -> void{};
-auto SBT::Rename(const key_type &, const key_type &) -> bool { return true; };
+auto SBT::Update(const record_type &rec) -> bool {
+  Node *node_for_update = FindRecord(root_, rec.first);
+  bool res = static_cast<bool>(node_for_update);
+  if (res) {
+    Person &person_for_update = node_for_update->data_.person_;
+    int mask = rec.second.mask_;
+    if (mask & 0b10000)
+      person_for_update.surname_ = rec.second.person_.surname_;
+    if (mask & 0b01000) person_for_update.name_ = rec.second.person_.name_;
+    if (mask & 0b00100)
+      person_for_update.balance_ = rec.second.person_.balance_;
+    if (mask & 0b00010)
+      person_for_update.birth_year_ = rec.second.person_.birth_year_;
+    if (mask & 0b00001) person_for_update.city_ = rec.second.person_.city_;
+  }
+  return res;
+};
+
+auto SBT::Keys() -> std::vector<key_type> {
+  std::vector<key_type> res(0);
+  preOrder(root_, res);
+  return res;
+};
+
+auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
+
+  return true;
+};
+
 auto SBT::TTL(const key_type &) -> int { return 0; };
 auto SBT::Find(const Person &) -> std::vector<key_type> {
   return std::vector<key_type>(0);
@@ -144,3 +171,10 @@ auto SBT::Export(const std::string &) -> size_t {
   return res;
 };
 auto SBT::Clear() -> void{};
+
+auto SBT::preOrder(Node *p, std::vector<key_type> &res) -> void {
+  if (p == nullptr) return;
+  res.push_back(p->key_);
+  preOrder(p->left_, res);
+  preOrder(p->right_, res);
+}
