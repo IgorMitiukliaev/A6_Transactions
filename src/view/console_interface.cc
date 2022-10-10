@@ -8,4 +8,4 @@ using BaseType = Controller::BaseType;
 
 MainWindow::MainWindow() { controller_ = std::make_unique<s21::Controller>(); };
 
-auto MainWindow::Show() -> void { controller_->Init(::Controller::HASH); };
+auto MainWindow::Show() -> void { controller_->Init(::Controller::SBT); };

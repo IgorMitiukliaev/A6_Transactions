@@ -12,18 +12,22 @@ class BaseClass;
 using key_type = std::string;
 
 class Person {
+ public:
+  Person() : surname_(""), name_(""), birth_year_(-1), city_(""), balance_(0){};
+
  private:
-  std::string surname;
-  std::string name;
-  int birth_year;
-  std::string city;
-  int balance;
+  std::string surname_;
+  std::string name_;
+  int birth_year_;
+  std::string city_;
+  int balance_;
 };
 
 struct record {
-  Person person;
-  time_t create_time = 0;
-  int erase_time = -1;
+  Person person_;
+  time_t create_time_ = 0;
+  int erase_time_ = -1;
+  record() : person_(){};
 };
 
 typedef std::pair<s21::key_type, s21::record> record_type;
@@ -31,7 +35,7 @@ typedef std::pair<s21::key_type, s21::record> record_type;
 class BaseClass {
  public:
   virtual auto Set(const record_type &) -> bool = 0;
-  virtual auto Get(const key_type &) -> record_type & = 0;
+  virtual auto Get(const key_type &) -> record & = 0;
   virtual auto Exist(const key_type &) -> bool = 0;
   virtual auto Del(const key_type &) -> bool = 0;
   virtual auto Update(const record_type &) -> bool = 0;

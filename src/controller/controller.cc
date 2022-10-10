@@ -2,11 +2,17 @@
 
 using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
-using HashTable = s21::HashTable;
+// using HashTable = s21::HashTable;
 
 auto Controller::Init(const BaseType type) -> void {
   if (type == HASH)
-    model_ = new ::HashTable;
+    ;
+  // model_ = new ::HashTable;
   else
     model_ = new ::SBT;
+  record_type new_rec("qqq", record());
+  model_->Set(new_rec);
+  new_rec.first = "www";
+  model_->Set(new_rec);
+  std::cout << "OK\n";
 };

@@ -2,8 +2,9 @@
 #define SRC_CONTROLLER_CONTROLLER_H_
 
 #include <string>
+#include <iostream>
 
-#include "../hash_table/hash_table.h"
+// #include "../hash_table/hash_table.h"
 #include "../self_balancing_binary_search_tree/self_balancing_binary_search_tree.h"
 
 namespace s21 {

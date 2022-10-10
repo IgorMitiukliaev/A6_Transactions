@@ -15,17 +15,17 @@ class SelfBalancingBinarySearchTree : public BaseClass {
     Node() = delete;
     key_type key_;
     record data_;
-    unsigned char height_;
     Node *left_;
     Node *right_;
+    unsigned char height_;
     Node(record_type k)
         : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {}
   };
-  SelfBalancingBinarySearchTree();
+  SelfBalancingBinarySearchTree() = default;
   explicit SelfBalancingBinarySearchTree(record_type &record);
   ~SelfBalancingBinarySearchTree();
   auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record_type &;
+  auto Get(const key_type &) -> record &;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
@@ -39,10 +39,13 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Clear() -> void;
 
  private:
-  Node *root;
-  inline auto Height(Node *p) -> unsigned char;
-  inline auto Bfactor(Node *p) -> int;
-  inline auto FixHeight(Node *p) -> void;
+  Node *root_ = nullptr;
+  inline auto Height(Node *p) -> unsigned char { return p ? p->height_ : 0; }
+  inline auto Bfactor(Node *p) -> int {
+    return Height(p->right_) - Height(p->left_);
+  }
+
+  auto FixHeight(Node *p) -> void;
   auto RotateRight(Node *p) -> Node *;  // правый поворот вокруг p
   auto RotateLeft(Node *p) -> Node *;  // левый поворот вокруг p
   auto Balance(Node *p) -> Node *;     // балансировка узла p

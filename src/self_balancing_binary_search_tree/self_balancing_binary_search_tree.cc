@@ -1,34 +1,20 @@
 #include "self_balancing_binary_search_tree.h"
 
+#include <cstddef>
 
-using Node = class  s21::SelfBalancingBinarySearchTree::Node;
-
-
+using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
-
+using s21::record_type;
 
 SBT::SelfBalancingBinarySearchTree(s21::record_type &record) {
-  root = new Node(record);
+  root_ = new Node(record);
 }
-
-// auto SBT::Set(const record_type &) -> bool {}
-
-auto SBT::Height(Node *p) -> unsigned char {
-  return p ? p->height_ : 0;
-};
-
-
-auto SBT::Bfactor(Node *p) -> int {
-  return Height(p->right_) - Height(p->left_);
-}
-
 
 auto SBT::FixHeight(Node *p) -> void {
   unsigned char h_left = Height(p->left_);
   unsigned char h_right = Height(p->right_);
   p->height_ = (h_left > h_right ? h_left : h_right) + 1;
 }
-
 
 auto SBT::RotateRight(Node *p) -> Node * {
   Node *q = p->left_;
@@ -39,7 +25,6 @@ auto SBT::RotateRight(Node *p) -> Node * {
   return q;
 }
 
-
 auto SBT::RotateLeft(Node *q) -> Node * {
   Node *p = q->right_;
   q->right_ = p->left_;
@@ -48,7 +33,6 @@ auto SBT::RotateLeft(Node *q) -> Node * {
   FixHeight(p);
   return p;
 }
-
 
 auto SBT::Balance(Node *p) -> Node * {
   FixHeight(p);
@@ -63,7 +47,6 @@ auto SBT::Balance(Node *p) -> Node * {
   return p;
 }
 
-
 auto SBT::Insert(Node *p, record_type k) -> Node * {
   if (!p) return new Node(k);
   if (k.first < p->key_)
@@ -73,18 +56,15 @@ auto SBT::Insert(Node *p, record_type k) -> Node * {
   return Balance(p);
 }
 
-
 auto SBT::FindMin(Node *p) -> Node * {
   return p->left_ ? FindMin(p->left_) : p;
 }
-
 
 auto SBT::RemoveMin(Node *p) -> Node * {
   if (p->left_ == 0) return p->right_;
   p->left_ = RemoveMin(p->left_);
   return Balance(p);
 }
-
 
 auto SBT::Remove(Node *p, key_type k) -> Node * {
   if (!p) return 0;
@@ -105,3 +85,35 @@ auto SBT::Remove(Node *p, key_type k) -> Node * {
   }
   return Balance(p);
 }
+
+auto SBT::Set(const record_type &new_record) -> bool {
+  if (!root_)
+    root_ = new Node(new_record);
+  else
+    root_ = Insert(root_, new_record);
+  return static_cast<bool>(root_);
+}
+
+auto SBT::Get(const key_type &k) -> record & {
+  record *a = new record();
+  return *a;
+};
+auto SBT::Exist(const key_type &) -> bool { return true; };
+auto SBT::Del(const key_type &) -> bool { return true; };
+auto SBT::Update(const record_type &) -> bool { return true; };
+auto SBT::Keys() -> void{};
+auto SBT::Rename(const key_type &, const key_type &) -> bool { return true; };
+auto SBT::TTL(const key_type &) -> int { return 0; };
+auto SBT::Find(const Person &) -> std::vector<key_type> {
+  return std::vector<key_type>(0);
+};
+auto SBT::ShowAll() -> void{};
+auto SBT::Upload(const std::string &) -> size_t {
+  size_t res;
+  return res;
+};
+auto SBT::Export(const std::string &) -> size_t {
+  size_t res;
+  return res;
+};
+auto SBT::Clear() -> void{};
