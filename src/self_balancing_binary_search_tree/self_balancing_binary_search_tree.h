@@ -56,6 +56,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto RemoveMin(Node *p)
       -> Node *;  // удаление узла с минимальным ключом из дерева p
   auto Remove(Node *p, key_type k) -> Node *;  // удаление ключа k из дерева p
+  auto FindRecord(Node *p, key_type k) -> Node *;
 };
 
 }  // namespace s21

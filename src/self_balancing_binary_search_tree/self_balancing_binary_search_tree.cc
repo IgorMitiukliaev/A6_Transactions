@@ -74,32 +74,59 @@ auto SBT::Remove(Node *p, key_type k) -> Node * {
     p->right_ = Remove(p->right_, k);
   else  //  k == p->key
   {
-    Node *q = p->left_;
+    Node *l = p->left_;
     Node *r = p->right_;
     delete p;
-    if (!r) return q;
+    if (!r) return l;
     Node *min = FindMin(r);
     min->right_ = RemoveMin(r);
-    min->left_ = q;
+    min->left_ = l;
     return Balance(min);
   }
   return Balance(p);
 }
 
 auto SBT::Set(const record_type &new_record) -> bool {
+  bool res = true;
   if (!root_)
     root_ = new Node(new_record);
+  else if (FindRecord(root_, new_record.first))
+    res = false;
   else
     root_ = Insert(root_, new_record);
-  return static_cast<bool>(root_);
+  return res && static_cast<bool>(root_);
+}
+
+auto SBT::FindRecord(Node *p, key_type k) -> Node * {
+  if (!p) {
+    return nullptr;
+  } else if (p->key_ == k) {
+    return p;
+  } else if (p->key_ > k) {
+    return FindRecord(p->left_, k);
+  } else {
+    return FindRecord(p->right_, k);
+  }
 }
 
 auto SBT::Get(const key_type &k) -> record & {
-  record *a = new record();
-  return *a;
+  return FindRecord(root_, k)->data_;
 };
-auto SBT::Exist(const key_type &) -> bool { return true; };
-auto SBT::Del(const key_type &) -> bool { return true; };
+
+auto SBT::Exist(const key_type &k) -> bool {
+  return static_cast<bool>(FindRecord(root_, k));
+};
+
+auto SBT::Del(const key_type &k) -> bool {
+  bool res = false;
+  Node *new_root = Remove(root_, k);
+  if (new_root) {
+    root_ = new_root;
+    res = true;
+  }
+  return res;
+};
+
 auto SBT::Update(const record_type &) -> bool { return true; };
 auto SBT::Keys() -> void{};
 auto SBT::Rename(const key_type &, const key_type &) -> bool { return true; };
