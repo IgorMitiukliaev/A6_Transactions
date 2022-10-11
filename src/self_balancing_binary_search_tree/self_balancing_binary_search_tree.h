@@ -5,6 +5,11 @@ https://habr.com/ru/post/150732/
 #ifndef SRC_SELF_BALANCING_BINARY_SEARCH_TREE_SELF_BALANCING_BINARY_SEARCH_TREE_H_
 #define SRC_SELF_BALANCING_BINARY_SEARCH_TREE_SELF_BALANCING_BINARY_SEARCH_TREE_H_
 
+#include <cstddef>
+#include <iostream>
+#include <locale>
+#include <vector>
+
 #include "../core/virtual_base.h"
 
 namespace s21 {
@@ -25,7 +30,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   explicit SelfBalancingBinarySearchTree(record_type &record);
   ~SelfBalancingBinarySearchTree();
   auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) ->  std::optional<std::reference_wrapper<record>> ;
+  auto Get(const key_type &) -> record_nullable;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
@@ -33,13 +38,14 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
   auto Find(const Person &, int mask) -> std::vector<key_type>;
-  auto ShowAll() -> void;
-  auto ShowAllV() -> std::vector<Node *>;
+  auto ShowAll() -> std::vector<record *>;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
+  auto Update() -> void;
 
  private:
+  using func_t = std::function<void(Node *)>;
   Node *root_ = nullptr;
   inline auto Height(Node *p) -> unsigned char { return p ? p->height_ : 0; }
   inline auto Bfactor(Node *p) -> int {
@@ -60,6 +66,8 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto FindRecord(Node *p, key_type k) -> Node *;
   auto preOrder(Node *p, std::vector<key_type> &res) -> void;
   auto preOrder(Node *p, std::vector<Node *> &res) -> void;
+  auto preOrder(Node *p, std::vector<record *> &res) -> void;
+  auto preOrder(Node *p, func_t f) -> void;
   auto preOrderFind(Node *p, const Person &person, int mask,
                     std::vector<key_type> &res) -> void;
   auto checkNode(Node *, const Person &, int) -> bool;

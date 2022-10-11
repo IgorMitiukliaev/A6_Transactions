@@ -2,6 +2,7 @@
 #define SRC_CORE_VIRTUAL_BASE_H_
 
 #include <cstddef>
+#include <cstring>
 #include <ctime>
 #include <functional>
 #include <optional>
@@ -34,6 +35,12 @@ class Person {
         city_(city),
         balance_(balance){};
   ~Person() = default;
+  auto ShowData() -> std::string {
+    std::string res;
+    res = surname_ + "; " + name_ + "; " + std::to_string(birth_year_) + "; " +
+          city_ + "; " + std::to_string(balance_);
+    return res;
+  }
   std::string surname_;
   std::string name_;
   int birth_year_;
@@ -55,21 +62,22 @@ struct record {
   int mask_;
 };
 
+typedef std::optional<std::reference_wrapper<record>> record_nullable;
 typedef std::pair<s21::key_type, s21::record> record_type;
 
 class BaseClass {
  public:
   virtual auto Set(const record_type &) -> bool = 0;
-  virtual auto Get(const key_type &)
-      -> std::optional<std::reference_wrapper<record>> = 0;
+  virtual auto Get(const key_type &) -> record_nullable = 0;
   virtual auto Exist(const key_type &) -> bool = 0;
   virtual auto Del(const key_type &) -> bool = 0;
   virtual auto Update(const record_type &) -> bool = 0;
   virtual auto Keys() -> std::vector<key_type> = 0;
   virtual auto Rename(const key_type &, const key_type &) -> bool = 0;
+  // возвращаем -1 если не нашли ключ или erase_time < 0
   virtual auto TTL(const key_type &) -> int = 0;
   virtual auto Find(const Person &, int) -> std::vector<key_type> = 0;
-  virtual auto ShowAll() -> void = 0;
+  virtual auto ShowAll() -> std::vector<record *> = 0;
   virtual auto Upload(const std::string &path) -> size_t = 0;
   virtual auto Export(const std::string &path) -> size_t = 0;
   virtual auto Clear() -> void = 0;

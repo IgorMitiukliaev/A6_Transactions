@@ -1,8 +1,5 @@
 #include "self_balancing_binary_search_tree.h"
 
-#include <cstddef>
-#include <vector>
-
 using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using s21::record_type;
@@ -168,7 +165,16 @@ auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
   return res;
 };
 
-auto SBT::TTL(const key_type &) -> int { return 0; };
+auto SBT::TTL(const key_type &k) -> int {
+  Node *node = FindRecord(root_, k);
+  int res = -1;
+  if (node && node->data_.erase_time_ > 0) {
+    time_t erase_time = node->data_.create_time_ + node->data_.erase_time_;
+    res = erase_time - std::time(0);
+    res = static_cast<int>(erase_time - std::time(0));
+  }
+  return res;
+};
 
 auto SBT::Find(const Person &person, int mask) -> std::vector<key_type> {
   std::vector<key_type> res(0);
@@ -176,10 +182,8 @@ auto SBT::Find(const Person &person, int mask) -> std::vector<key_type> {
   return res;
 };
 
-auto SBT::ShowAll() -> void{};
-
-auto SBT::ShowAllV() -> std::vector<Node *> {
-  std::vector<Node *> res(0);
+auto SBT::ShowAll() -> std::vector<record *> {
+  std::vector<record *> res(0);
   preOrder(root_, res);
   return res;
 };
@@ -188,12 +192,22 @@ auto SBT::Upload(const std::string &path) -> size_t {
   size_t res;
   return res;
 };
+
 auto SBT::Export(const std::string &path) -> size_t {
   size_t res;
   return res;
 };
 
-auto SBT::Clear() -> void{};
+auto SBT::Clear() -> void {
+  if (root_) {
+    auto f = [](Node *p) {
+      delete p;
+      p = nullptr;
+    };
+    preOrder(root_, f);
+    root_ = nullptr;
+  }
+};
 
 auto SBT::preOrder(Node *p, std::vector<key_type> &res) -> void {
   if (p == nullptr) return;
@@ -207,6 +221,21 @@ auto SBT::preOrder(Node *p, std::vector<Node *> &res) -> void {
   res.push_back(p);
   preOrder(p->left_, res);
   preOrder(p->right_, res);
+}
+
+auto SBT::preOrder(Node *p, std::vector<record *> &res) -> void {
+  if (p == nullptr) return;
+  res.push_back(&p->data_);
+  preOrder(p->left_, res);
+  preOrder(p->right_, res);
+}
+
+auto SBT::preOrder(Node *p, func_t f) -> void {
+  if (p) {
+    preOrder(p->left_, f);
+    preOrder(p->right_, f);
+    f(p);
+  }
 }
 
 auto SBT::preOrderFind(Node *p, const Person &person, int mask,
@@ -235,3 +264,11 @@ auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
     res = false;
   return res;
 }
+
+auto SBT::Update() -> void {
+  func_t f = [this](Node *p) {
+    time_t erase_time = p->data_.create_time_ + p->data_.erase_time_;
+    if (erase_time < std::time(NULL)) Del(p->key_);
+  };
+  preOrder(root_, f);
+};
