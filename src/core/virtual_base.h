@@ -37,8 +37,8 @@ class Person {
   ~Person() = default;
   auto ShowData() -> std::string {
     std::string res;
-    res = surname_ + "; " + name_ + "; " + std::to_string(birth_year_) + "; " +
-          city_ + "; " + std::to_string(balance_);
+    res = surname_ + " " + name_ + " " + std::to_string(birth_year_) + " " +
+          city_ + " " + std::to_string(balance_);
     return res;
   }
   std::string surname_;
