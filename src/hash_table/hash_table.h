@@ -18,6 +18,7 @@ class HashTable : public BaseClass {
   ~HashTable();
   auto Set(const record_type &) -> bool;
   auto Get(const key_type &) -> record &;
+  // auto Get(const key_type &) -> std::string &;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
@@ -55,10 +56,13 @@ class HashTable : public BaseClass {
 
   // bool Add(const Node &unit);
 
-  bool Add(const key_type &key, const record &data);
-
+  // auto Add(const key_type &key, const record &data) -> bool;
   auto Resize() -> void;
   auto Rehash() -> void;
+  auto Add(const key_type &key, const record &data) -> bool;
+  // auto FindRecord(Node *p, key_type k) -> Node *auto Resize() -> void;
+
+  auto FindRecord(const key_type &key) -> Node *;
 };
 
 }  // namespace s21
