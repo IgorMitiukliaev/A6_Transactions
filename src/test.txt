@@ -1,0 +1,2 @@
+key1    "Vassiliev"  "Ivan Sanych"    2001    "New York"  55
+key2    "Иванов"  "Isaak Абрамович"          2015    "Astana"    100
