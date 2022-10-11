@@ -25,15 +25,16 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   explicit SelfBalancingBinarySearchTree(record_type &record);
   ~SelfBalancingBinarySearchTree();
   auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record &;
+  auto Get(const key_type &) ->  std::optional<std::reference_wrapper<record>> ;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
   auto Keys() -> std::vector<key_type>;
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
-  auto Find(const Person &) -> std::vector<key_type>;
+  auto Find(const Person &, int mask) -> std::vector<key_type>;
   auto ShowAll() -> void;
+  auto ShowAllV() -> std::vector<Node *>;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
@@ -58,6 +59,10 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Remove(Node *p, key_type k) -> Node *;  // удаление ключа k из дерева p
   auto FindRecord(Node *p, key_type k) -> Node *;
   auto preOrder(Node *p, std::vector<key_type> &res) -> void;
+  auto preOrder(Node *p, std::vector<Node *> &res) -> void;
+  auto preOrderFind(Node *p, const Person &person, int mask,
+                    std::vector<key_type> &res) -> void;
+  auto checkNode(Node *, const Person &, int) -> bool;
 };
 
 }  // namespace s21
