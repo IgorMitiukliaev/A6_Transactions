@@ -110,8 +110,11 @@ auto SBT::FindRecord(Node *p, key_type k) -> Node * {
   }
 }
 
-auto SBT::Get(const key_type &k) -> record & {
-  return FindRecord(root_, k)->data_;
+auto SBT::Get(const key_type &k)
+    -> std::optional<std::reference_wrapper<record>> {
+  Node *n = FindRecord(root_, k);
+  return n ? std::optional<std::reference_wrapper<record>>{n->data_}
+           : std::nullopt;
 };
 
 auto SBT::Exist(const key_type &k) -> bool {
@@ -134,14 +137,14 @@ auto SBT::Update(const record_type &rec) -> bool {
   if (res) {
     Person &person_for_update = node_for_update->data_.person_;
     int mask = rec.second.mask_;
-    if (mask & 0b10000)
+    if (mask & MASK_SURNAME)
       person_for_update.surname_ = rec.second.person_.surname_;
-    if (mask & 0b01000) person_for_update.name_ = rec.second.person_.name_;
-    if (mask & 0b00100)
+    if (mask & MASK_NAME) person_for_update.name_ = rec.second.person_.name_;
+    if (mask & MASK_BIRTH_YEAR)
       person_for_update.balance_ = rec.second.person_.balance_;
-    if (mask & 0b00010)
+    if (mask & MASK_CITY)
       person_for_update.birth_year_ = rec.second.person_.birth_year_;
-    if (mask & 0b00001) person_for_update.city_ = rec.second.person_.city_;
+    if (mask & MASK_BALANCE) person_for_update.city_ = rec.second.person_.city_;
   }
   return res;
 };
@@ -153,23 +156,43 @@ auto SBT::Keys() -> std::vector<key_type> {
 };
 
 auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
-
-  return true;
+  Node *node_for_rename = FindRecord(root_, old_key);
+  bool res = false;
+  if (static_cast<bool>(node_for_rename)) {
+    res = true;
+    record rec = node_for_rename->data_;
+    record_type record_for_rename(new_key, rec);
+    Del(old_key);
+    Insert(root_, record_for_rename);
+  }
+  return res;
 };
 
 auto SBT::TTL(const key_type &) -> int { return 0; };
-auto SBT::Find(const Person &) -> std::vector<key_type> {
-  return std::vector<key_type>(0);
+
+auto SBT::Find(const Person &person, int mask) -> std::vector<key_type> {
+  std::vector<key_type> res(0);
+  preOrderFind(root_, person, mask, res);
+  return res;
 };
+
 auto SBT::ShowAll() -> void{};
-auto SBT::Upload(const std::string &) -> size_t {
+
+auto SBT::ShowAllV() -> std::vector<Node *> {
+  std::vector<Node *> res(0);
+  preOrder(root_, res);
+  return res;
+};
+
+auto SBT::Upload(const std::string &path) -> size_t {
   size_t res;
   return res;
 };
-auto SBT::Export(const std::string &) -> size_t {
+auto SBT::Export(const std::string &path) -> size_t {
   size_t res;
   return res;
 };
+
 auto SBT::Clear() -> void{};
 
 auto SBT::preOrder(Node *p, std::vector<key_type> &res) -> void {
@@ -177,4 +200,38 @@ auto SBT::preOrder(Node *p, std::vector<key_type> &res) -> void {
   res.push_back(p->key_);
   preOrder(p->left_, res);
   preOrder(p->right_, res);
+}
+
+auto SBT::preOrder(Node *p, std::vector<Node *> &res) -> void {
+  if (p == nullptr) return;
+  res.push_back(p);
+  preOrder(p->left_, res);
+  preOrder(p->right_, res);
+}
+
+auto SBT::preOrderFind(Node *p, const Person &person, int mask,
+                       std::vector<key_type> &res) -> void {
+  if (p == nullptr) return;
+  if (checkNode(p, person, mask)) res.push_back(p->key_);
+  preOrder(p->left_, res);
+  preOrder(p->right_, res);
+}
+
+auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
+  bool res = true;
+  Person &person_for_check = p->data_.person_;
+  if (res && mask & MASK_SURNAME &&
+      person_for_check.surname_ != person.surname_)
+    res = false;
+  if (res && mask & MASK_NAME && person_for_check.name_ != person.name_)
+    res = false;
+  if (res && mask & MASK_BIRTH_YEAR &&
+      person_for_check.balance_ != person.balance_)
+    res = false;
+  if (res && mask & MASK_CITY &&
+      person_for_check.birth_year_ != person.birth_year_)
+    res = false;
+  if (res && mask & MASK_BALANCE && person_for_check.city_ != person.city_)
+    res = false;
+  return res;
 }
