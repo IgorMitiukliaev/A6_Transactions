@@ -17,16 +17,15 @@ class HashTable : public BaseClass {
   HashTable();
   ~HashTable();
   auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record &;
-  // auto Get(const key_type &) -> std::string &;
+  auto Get(const key_type &) -> record_nullable;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
   auto Keys() -> std::vector<key_type> = 0;
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
-  auto Find(const Person &) -> std::vector<key_type>;
-  auto ShowAll() -> void;
+  auto Find(const Person &, int) -> std::vector<key_type>;
+  auto ShowAll() -> std::vector<record *>;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
@@ -63,6 +62,7 @@ class HashTable : public BaseClass {
   // auto FindRecord(Node *p, key_type k) -> Node *auto Resize() -> void;
 
   auto FindRecord(const key_type &key) -> Node *;
+  auto CheckNode(const key_type &key, const Person &person, int mask) -> bool;
 };
 
 }  // namespace s21

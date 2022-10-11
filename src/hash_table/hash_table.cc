@@ -17,11 +17,11 @@ int s21::hash1(const std::string& s, int table_size) {
   return HashFunctionHorner(s, table_size, table_size - 1);
   // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и
   // минус один.
-};
+}
 
 int s21::hash2(const std::string& s, int table_size) {
   return HashFunctionHorner(s, table_size, table_size + 1);
-};
+}
 
 HashTable::HashTable() {
   buffer_size_ = default_size_;
@@ -45,7 +45,15 @@ auto HashTable::Set(const record_type& record) -> bool {
   return result;
 }
 
-auto HashTable::Get(const key_type&) -> record& {}
+// auto HashTable::Get(const key_type&) -> record& {}
+
+auto HashTable::Get(const key_type& key)
+    -> std::optional<std::reference_wrapper<record>> {
+  Node* get_node = FindRecord(key);
+  return get_node
+             ? std::optional<std::reference_wrapper<record>>{get_node->data_}
+             : std::nullopt;
+}
 
 auto HashTable::Exist(const key_type& key) -> bool {
   bool result = false;
@@ -60,6 +68,112 @@ auto HashTable::Del(const key_type& key) -> bool {
     del->state_ = false;
     result = true;
   }
+  return result;
+}
+
+auto HashTable::Update(const record_type& record) -> bool {
+  Node* node_for_update = FindRecord(record.first);
+  bool result = static_cast<bool>(node_for_update);
+  if (result) {
+    Person& person_for_update = node_for_update->data_.person_;
+    int mask = record.second.mask_;
+    if (mask & MASK_SURNAME)
+      person_for_update.surname_ = record.second.person_.surname_;
+    if (mask & MASK_NAME) person_for_update.name_ = record.second.person_.name_;
+    if (mask & MASK_BIRTH_YEAR)
+      person_for_update.balance_ = record.second.person_.balance_;
+    if (mask & MASK_CITY)
+      person_for_update.birth_year_ = record.second.person_.birth_year_;
+    if (mask & MASK_BALANCE)
+      person_for_update.city_ = record.second.person_.city_;
+  }
+  return result;
+}
+
+auto HashTable::Keys() -> std::vector<key_type> {
+  std::vector<key_type> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_) result.push_back(arr_[i]->key_);
+  }
+  return result;
+}
+
+auto HashTable::Rename(const key_type& old_key, const key_type& new_key)
+    -> bool {
+  bool result = false;
+  Node* node_for_rename = FindRecord(old_key);
+  if (static_cast<bool>(node_for_rename) && FindRecord(new_key) == nullptr) {
+    record record = node_for_rename->data_;
+    Del(old_key);
+    Add(new_key, record);
+    result = true;
+  }
+  return result;
+}
+
+auto HashTable::TTL(const key_type& key) -> int {
+  Node* node = FindRecord(key);
+  int result = -1;
+  if (node && node->data_.erase_time_ > 0) {
+    time_t erase_time = node->data_.create_time_ + node->data_.erase_time_;
+    result = erase_time - std::time(0);
+    result = static_cast<int>(erase_time - std::time(0));
+  }
+  return result;
+}
+
+auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
+  std::vector<key_type> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_ && CheckNode(arr_[i]->key_, person, mask))
+      result.push_back(arr_[i]->key_);
+  }
+  return result;
+}
+
+auto HashTable::ShowAll() -> std::vector<record*> {
+  std::vector<record*> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_) result.push_back(&arr_[i]->data_);
+  }
+  return result;
+}
+
+auto HashTable::Upload(const std::string& path) -> size_t {
+  size_t result;
+  return result;
+}
+
+auto HashTable::Export(const std::string& path) -> size_t {
+  size_t result;
+  return result;
+}
+
+auto HashTable::Clear() -> void {
+  for (int i = 0; i < buffer_size_; ++i)
+    if (arr_[i]) delete arr_[i];
+  delete[] arr_;
+};
+
+auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
+    -> bool {
+  bool result = true;
+  Node* node = FindRecord(key);
+  Person& person_for_check = node->data_.person_;
+  // Person& person_for_update = node_for_update->data_.person_
+  if (result && mask & MASK_SURNAME &&
+      person_for_check.surname_ != person.surname_)
+    result = false;
+  if (result && mask & MASK_NAME && person.name_ != person.name_)
+    result = false;
+  if (result && mask & MASK_BIRTH_YEAR &&
+      person_for_check.balance_ != person.balance_)
+    result = false;
+  if (result && mask & MASK_CITY &&
+      person_for_check.birth_year_ != person.birth_year_)
+    result = false;
+  if (result && mask & MASK_BALANCE && person_for_check.city_ != person.city_)
+    result = false;
   return result;
 }
 
