@@ -14,8 +14,6 @@ using key_type = std::string;
 class Person {
  public:
   Person() : surname_(""), name_(""), birth_year_(-1), city_(""), balance_(0){};
-
- private:
   std::string surname_;
   std::string name_;
   int birth_year_;
@@ -28,6 +26,7 @@ struct record {
   time_t create_time_ = 0;
   int erase_time_ = -1;
   record() : person_(){};
+  int mask_ = 0b11111;
 };
 
 typedef std::pair<s21::key_type, s21::record> record_type;
@@ -39,7 +38,7 @@ class BaseClass {
   virtual auto Exist(const key_type &) -> bool = 0;
   virtual auto Del(const key_type &) -> bool = 0;
   virtual auto Update(const record_type &) -> bool = 0;
-  virtual auto Keys() -> void = 0;
+  virtual auto Keys() -> std::vector<key_type> = 0;
   virtual auto Rename(const key_type &, const key_type &) -> bool = 0;
   virtual auto TTL(const key_type &) -> int = 0;
   virtual auto Find(const Person &) -> std::vector<key_type> = 0;
