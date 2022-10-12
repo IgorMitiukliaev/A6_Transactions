@@ -54,6 +54,8 @@ class Controller {
 
  private:
   s21::BaseClass* model_ = nullptr;
+
+  auto CommandRead(const std::string&, std::vector<std::string>&) -> void;
 };
 
 };  // namespace s21

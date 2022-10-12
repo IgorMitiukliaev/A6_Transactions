@@ -130,12 +130,12 @@ auto MainWindow::SwitchType(int type) -> void {
   std::system("clear");
   switch (type) {
   case 1:
-    controller_->Init(::Controller::SBT);
+    controller_->Init(::Controller::HASH);
     SecondMenu();
     ShooseSecondCommand();
     break;
   case 2:
-    controller_->Init(::Controller::HASH);
+    controller_->Init(::Controller::SBT);
     SecondMenu();
     ShooseSecondCommand();
     break;

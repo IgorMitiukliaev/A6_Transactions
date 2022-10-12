@@ -1,26 +1,94 @@
 #include "controller.h"
 
+#include <cstddef>
+#include <exception>
+#include <ios>
+#include <regex>
+#include <string>
+#include <vector>
+// foo bar "Иван Саныч" 55 "Q"
 using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
-auto Controller::Command(std::string command) -> void {
-  std::cout << "command =" << command << std::endl;
+auto Controller::Command(std::string command_str) -> void {
+  std::vector<std::string> c(0);
+  CommandRead(command_str, c);
+  try {
+    if (c[0] == "SET") {
+      int erase_time = -1;
+      if (c[7] == "EX") erase_time = std::stoi(c[8]);
+      AddElement(c[1], c[2], c[3], std::stoi(c[4]), c[5], std::stoi(c[6]),
+                 erase_time);
+      ShowAll();
+    } else if (c[0] == "GET") {
+      GetElement(c[1]);
+    } else if (c[0] == "EXISTS") {
+      ExistElement(c[1]);
+    } else if (c[0] == "DEL") {
+      DeleteElement(c[1]);
+    } else if (c[0] == "UPDATE") {
+      UpdateElement(
+          c[1], c[2] == "-" ? std::nullopt : std::optional<std::string>(c[2]),
+          c[3] == "-" ? std::nullopt : std::optional<std::string>(c[3]),
+          c[4] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[4])),
+          c[5] == "-" ? std::nullopt : std::optional<std::string>(c[5]),
+          c[6] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[6])));
+    } else if (c[0] == "KEYS") {
+    } else if (c[0] == "RENAME") {
+    } else if (c[0] == "TTL") {
+    } else if (c[0] == "FIND") {
+    } else if (c[0] == "SHOWALL") {
+    } else if (c[0] == "UPLOAD") {
+    } else if (c[0] == "EXPORT") {
+    } else if (c[0] == "CLEAR") {
+    } else if (c[0] == "STORAGE") {
+    } else if (c[0] == "EXIT") {
+    } else {
+    }
+  } catch (std::exception& e) {
+    std::cout << e.what() << std::endl;
+  }
 }
+
+auto Controller::CommandRead(const std::string& command_str,
+                             std::vector<std::string>& command) -> void {
+  std::regex r_com(R"(^([[:alnum:]]+)\b)", std::regex::ECMAScript);
+  std::regex r_arg(R"([\"]([^\"]+)[\"$]|[\s]([^\"\s$]+))",
+                   std::regex::ECMAScript);
+
+  std::smatch m;
+  std::regex_search(command_str, m, r_com);
+  command.push_back(m[1]);
+  std::sregex_iterator it_begin(command_str.begin(), command_str.end(), r_arg);
+  std::sregex_iterator it_end = std::sregex_iterator();
+  for (std::sregex_iterator i = it_begin; i != it_end; i++) {
+    std::smatch m_a = *i;
+    std::string match_str =
+        m_a[1].str().length() == 0 ? m_a[2].str() : m_a[1].str();
+    command.push_back(match_str);
+    // std::cout << m_a[0].str() << " | " << m_a[1].str() << " | " <<
+    // m_a[2].str()
+    //           << " | " << std::endl;
+  }
+  // std::for_each(command.begin(), command.end(),
+  //               [](auto el) { std::cout << el << std::endl; });
+};
 
 auto Controller::Init(const BaseType type) -> void {
   if (type == HASH)
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
-  std::cout << ShowKeys();
-  AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
-             5);
-  ShowAll();
-  ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
-  std::cout << ShowTTL("key3") << std::endl;
-  ShowAll();
+  // UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
+  // std::cout << ShowKeys();
+  // AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville",
+  // 100,
+  //            5);
+  // ShowAll();
+  // ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
+  // std::cout << ShowTTL("key3") << std::endl;
+  // ShowAll();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {
@@ -206,4 +274,4 @@ auto Controller::ShowTTL(const std::string& key_ttl) -> std::string {
     }
   }
   return res;
-};
+}
