@@ -28,7 +28,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   };
   SelfBalancingBinarySearchTree() = default;
   explicit SelfBalancingBinarySearchTree(record_type &record);
-  ~SelfBalancingBinarySearchTree();
+  ~SelfBalancingBinarySearchTree() = default;
   auto Set(const record_type &) -> bool;
   auto Get(const key_type &) -> record_nullable;
   auto Exist(const key_type &) -> bool;

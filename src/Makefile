@@ -17,6 +17,10 @@ FILES_HASH_TABLE = ./core/virtual_base.h \
 FILES_SBT = ./core/virtual_base.h \
 	./self_balancing_binary_search_tree/self_balancing_binary_search_tree.cc
 
+FILES_FOR_TEST = ./test/test.cc\
+	$(FILES_SBT)\
+	$(FILES_HASH_TABLE)
+
 SBT = self_balancing_binary_search_tree
 
 all:
@@ -24,8 +28,29 @@ all:
 build: clean $(SBT).a hash_table.a
 	mkdir -p $(BD)
 	$(CC) $(LDFLAGS) $(FILES) -o $(BD)transactions.out -L. -l$(SBT) -lhash_table
+	$(BD)transactions.out
 
-tests:
+test_build: 
+ifeq ($(OS), Darwin)
+	$(CC) -o tests.out $(FILES_FOR_TEST) -lm -lgtest -lpthread
+else
+	$(CC) -o tests.out $(FILES_FOR_TEST) -lm -lgtest -lpthread
+endif
+
+test: test_build
+	./tests.out
+
+gcov_report: clean 
+	$(CC) --coverage -o testresult.out $(FILES_FOR_TEST) -lgtest -lpthread
+	./testresult.out
+	lcov -t "testresult" -o testresult.info -c -d . --no-external
+# lcov --remove testresult.info \
+# 	'*/containers/*'\
+# 	'*/matrix/*'\
+# 	'*/bonus_research.*'\
+# 	-o testresult_filtered.info
+	genhtml -o report testresult.info
+	open ./report/index.html
 
 hash_table.a:
 	$(CC) -c $(FILES_HASH_TABLE)
@@ -46,4 +71,5 @@ clean_hash:
 	rm -f hash_table.a libhash_table.a *o
 
 clean:
-	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno *.html *.out *.info *.dSYM report *.gch ./*/*.gch
+	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno \
+	*.html *.out *.info *.dSYM report *.gch ./*/*.gch

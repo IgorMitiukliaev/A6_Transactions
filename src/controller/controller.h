@@ -3,10 +3,12 @@
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
+#include <optional>
 #include <regex>
+#include <string>
 #include <vector>
-// #include <chrono>
 
 #include "../hash_table/hash_table.h"
 #include "../self_balancing_binary_search_tree/self_balancing_binary_search_tree.h"
@@ -14,8 +16,15 @@
 namespace s21 {
 class Controller {
  public:
+  Controller() = default;
+  ~Controller() = default;
+
   enum BaseType { HASH, SBT };
+
+  auto Command(std::string command) -> void;
+
   auto Init(const BaseType type) -> void;
+  auto Command(const std::string& in, std::string& out) -> void;
   auto AddElement(const std::string key, const std::string surname,
                   const std::string name, const int birth_year,
                   const std::string city, const int balance, int erase_time)
