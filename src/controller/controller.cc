@@ -1,10 +1,5 @@
 #include "controller.h"
 
-#include <functional>
-#include <optional>
-#include <string>
-#include <vector>
-
 using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;

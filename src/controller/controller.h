@@ -3,10 +3,12 @@
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
-#include <regex>
-#include <vector>
 #include <optional>
+#include <regex>
+#include <string>
+#include <vector>
 
 #include "../hash_table/hash_table.h"
 #include "../self_balancing_binary_search_tree/self_balancing_binary_search_tree.h"
