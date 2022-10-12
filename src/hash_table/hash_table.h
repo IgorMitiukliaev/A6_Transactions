@@ -21,7 +21,7 @@ class HashTable : public BaseClass {
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
-  auto Keys() -> std::vector<key_type> = 0;
+  auto Keys() -> std::vector<key_type>;
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
   auto Find(const Person &, int) -> std::vector<key_type>;

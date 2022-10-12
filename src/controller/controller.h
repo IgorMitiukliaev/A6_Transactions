@@ -7,7 +7,7 @@
 #include <regex>
 #include <vector>
 
-// #include "../hash_table/hash_table.h"
+#include "../hash_table/hash_table.h"
 #include "../self_balancing_binary_search_tree/self_balancing_binary_search_tree.h"
 
 namespace s21 {
@@ -33,8 +33,8 @@ class Controller {
   auto FindElement(const std::string&) -> void;
   auto ShowTTL(const std::string&) -> void;
   auto ShowAll(const std::string&) -> void;
-  auto UploadData(const std::string&) -> bool;
-  auto ExportData(const std::string&) -> bool;
+  auto UploadData(const std::string&) -> int;
+  auto ExportData(const std::string&) -> int;
   auto ClearStorage() -> void;
 
  private:
