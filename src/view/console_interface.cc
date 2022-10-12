@@ -1,4 +1,5 @@
 #include "console_interface.h"
+
 #include <ios>
 #include <limits>
 
@@ -137,16 +138,16 @@ auto MainWindow::ShooseSecondCommand() -> void {
 auto MainWindow::SwitchType(int type) -> void {
   std::system("clear");
   switch (type) {
-  case 1:
-    controller_->Init(::Controller::SBT);
-    ShooseSecondCommand();
-    break;
-  case 2:
-    controller_->Init(::Controller::HASH);
-    ShooseSecondCommand();
-    break;
-  default:
-    break;
+    case 1:
+      controller_->Init(::Controller::HASH);
+      ShooseSecondCommand();
+      break;
+    case 2:
+      controller_->Init(::Controller::SBT);
+      ShooseSecondCommand();
+      break;
+    default:
+      break;
   }
 }
 
@@ -170,7 +171,6 @@ auto MainWindow::PressButton() -> void {
   if (std::cin.get() == '\n') {
     ShooseSecondCommand();
   } else {
-
   }
 }
 
