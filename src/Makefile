@@ -6,6 +6,7 @@ OS=$(shell uname -s)
 BD= build/
 
 FILES = $(SBT).a\
+	hash_table.a\
 	./view/console_interface.cc\
 	./controller/controller.cc\
 	./main.cc
@@ -20,9 +21,9 @@ SBT = self_balancing_binary_search_tree
 
 all:
 
-build: clean $(SBT).a 
+build: clean $(SBT).a hash_table.a
 	mkdir -p $(BD)
-	$(CC) $(LDFLAGS) $(FILES) -o $(BD)transactions.out -L. -l$(SBT)
+	$(CC) $(LDFLAGS) $(FILES) -o $(BD)transactions.out -L. -l$(SBT) -lhash_table
 
 tests:
 
@@ -39,7 +40,10 @@ $(SBT).a: clean_sbt
 	cp $@ lib$@
 
 clean_sbt:
-	rm -f self_balancing_binary_search_tree.a *o
+	rm -f $(SBT).a lib$(SBT).a *o
+
+clean_hash:
+	rm -f hash_table.a libhash_table.a *o
 
 clean:
 	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno *.html *.out *.info *.dSYM report *.gch ./*/*.gch

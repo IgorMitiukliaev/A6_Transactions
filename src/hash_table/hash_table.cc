@@ -17,113 +17,247 @@ int s21::hash1(const std::string& s, int table_size) {
   return HashFunctionHorner(s, table_size, table_size - 1);
   // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и
   // минус один.
-};
+}
 
 int s21::hash2(const std::string& s, int table_size) {
   return HashFunctionHorner(s, table_size, table_size + 1);
-};
-
+}
 
 HashTable::HashTable() {
-  buffer_size = default_size;
-  size = 0;
-  size_all_non_nullptr = 0;
-  arr = new Node*[buffer_size];
-  for (int i = 0; i < buffer_size; ++i)
-    arr[i] = nullptr;  // заполняем nullptr - то есть если значение отсутствует,
-                       // и никто раньше по этому адресу не обращался
+  buffer_size_ = default_size_;
+  size_ = 0;
+  size_all_non_nullptr_ = 0;
+  arr_ = new Node*[buffer_size_];
+  for (int i = 0; i < buffer_size_; ++i) arr_[i] = nullptr;
+  // заполняем nullptr - то есть если значение отсутствует,
+  // и никто раньше по этому адресу не обращался
 }
-
 
 HashTable::~HashTable() {
-  for (int i = 0; i < buffer_size; ++i)
-    if (arr[i]) delete arr[i];
-  delete[] arr;
+  for (int i = 0; i < buffer_size_; ++i)
+    if (arr_[i]) delete arr_[i];
+  delete[] arr_;
 }
 
+auto HashTable::Set(const record_type& record) -> bool {
+  bool result = false;
+  if (Add(record.first, record.second)) result = true;
+  return result;
+}
 
-void HashTable::Resize() {
-  int past_buffer_size = buffer_size;
-  buffer_size *= 2;
-  size_all_non_nullptr = 0;
-  size = 0;
-  Node** arr2 = new Node*[buffer_size];
-  for (int i = 0; i < buffer_size; ++i) arr2[i] = nullptr;
-  std::swap(arr, arr2);
-  for (int i = 0; i < past_buffer_size; ++i) {
-    if (arr2[i] && arr2[i]->state)
-      Add(arr2[i]->value);  // добавляем элементы в новый массив
+// auto HashTable::Get(const key_type&) -> record& {}
+
+auto HashTable::Get(const key_type& key)
+    -> std::optional<std::reference_wrapper<record>> {
+  Node* get_node = FindRecord(key);
+  return get_node
+             ? std::optional<std::reference_wrapper<record>>{get_node->data_}
+             : std::nullopt;
+}
+
+auto HashTable::Exist(const key_type& key) -> bool {
+  bool result = false;
+  if (FindRecord(key) != nullptr) result = true;
+  return result;
+}
+
+auto HashTable::Del(const key_type& key) -> bool {
+  bool result = false;
+  Node* del = FindRecord(key);
+  if (del != nullptr) {
+    del->state_ = false;
+    result = true;
+  }
+  return result;
+}
+
+auto HashTable::Update(const record_type& record) -> bool {
+  Node* node_for_update = FindRecord(record.first);
+  bool result = static_cast<bool>(node_for_update);
+  if (result) {
+    Person& person_for_update = node_for_update->data_.person_;
+    int mask = record.second.mask_;
+    if (mask & MASK_SURNAME)
+      person_for_update.surname_ = record.second.person_.surname_;
+    if (mask & MASK_NAME) person_for_update.name_ = record.second.person_.name_;
+    if (mask & MASK_BIRTH_YEAR)
+      person_for_update.balance_ = record.second.person_.balance_;
+    if (mask & MASK_CITY)
+      person_for_update.birth_year_ = record.second.person_.birth_year_;
+    if (mask & MASK_BALANCE)
+      person_for_update.city_ = record.second.person_.city_;
+  }
+  return result;
+}
+
+auto HashTable::Keys() -> std::vector<key_type> {
+  std::vector<key_type> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_) result.push_back(arr_[i]->key_);
+  }
+  return result;
+}
+
+auto HashTable::Rename(const key_type& old_key, const key_type& new_key)
+    -> bool {
+  bool result = false;
+  Node* node_for_rename = FindRecord(old_key);
+  if (static_cast<bool>(node_for_rename) && FindRecord(new_key) == nullptr) {
+    record record = node_for_rename->data_;
+    Del(old_key);
+    Add(new_key, record);
+    result = true;
+  }
+  return result;
+}
+
+auto HashTable::TTL(const key_type& key) -> int {
+  Node* node = FindRecord(key);
+  int result = -1;
+  if (node && node->data_.erase_time_ > 0) {
+    time_t erase_time = node->data_.create_time_ + node->data_.erase_time_;
+    result = erase_time - std::time(0);
+    result = static_cast<int>(erase_time - std::time(0));
+  }
+  return result;
+}
+
+auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
+  std::vector<key_type> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_ && CheckNode(arr_[i]->key_, person, mask))
+      result.push_back(arr_[i]->key_);
+  }
+  return result;
+}
+
+auto HashTable::ShowAll() -> std::vector<record*> {
+  std::vector<record*> result(0);
+  for (int i = 0; i < buffer_size_; i++) {
+    if (arr_[i]->state_) result.push_back(&arr_[i]->data_);
+  }
+  return result;
+}
+
+auto HashTable::Upload(const std::string& path) -> size_t {
+  size_t result;
+  return result;
+}
+
+auto HashTable::Export(const std::string& path) -> size_t {
+  size_t result;
+  return result;
+}
+
+auto HashTable::Clear() -> void {
+  for (int i = 0; i < buffer_size_; ++i)
+    if (arr_[i]) delete arr_[i];
+  delete[] arr_;
+};
+
+auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
+    -> bool {
+  bool result = true;
+  Node* node = FindRecord(key);
+  Person& person_for_check = node->data_.person_;
+  // Person& person_for_update = node_for_update->data_.person_
+  if (result && mask & MASK_SURNAME &&
+      person_for_check.surname_ != person.surname_)
+    result = false;
+  if (result && mask & MASK_NAME && person.name_ != person.name_)
+    result = false;
+  if (result && mask & MASK_BIRTH_YEAR &&
+      person_for_check.balance_ != person.balance_)
+    result = false;
+  if (result && mask & MASK_CITY &&
+      person_for_check.birth_year_ != person.birth_year_)
+    result = false;
+  if (result && mask & MASK_BALANCE && person_for_check.city_ != person.city_)
+    result = false;
+  return result;
+}
+
+auto HashTable::Resize() -> void {
+  int past_buffer_size_ = buffer_size_;
+  buffer_size_ *= 2;
+  size_all_non_nullptr_ = 0;
+  size_ = 0;
+  Node** arr_2 = new Node*[buffer_size_];
+  for (int i = 0; i < buffer_size_; ++i) arr_2[i] = nullptr;
+  std::swap(arr_, arr_2);
+  for (int i = 0; i < past_buffer_size_; ++i) {
+    if (arr_2[i] && arr_2[i]->state_)
+      Add(arr_2[i]->key_,
+          arr_2[i]->data_);  // добавляем элементы в новый массив
   }
   // удаление предыдущего массива
-  for (int i = 0; i < past_buffer_size; ++i)
-    if (arr2[i]) delete arr2[i];
-  delete[] arr2;
+  for (int i = 0; i < past_buffer_size_; ++i)
+    if (arr_2[i]) delete arr_2[i];
+  delete[] arr_2;
 }
 
-
-void HashTable::Rehash() {
-  size_all_non_nullptr = 0;
-  size = 0;
-  Node** arr2 = new Node*[buffer_size];
-  for (int i = 0; i < buffer_size; ++i) arr2[i] = nullptr;
-  std::swap(arr, arr2);
-  for (int i = 0; i < buffer_size; ++i) {
-    if (arr2[i] && arr2[i]->state) Add(arr2[i]->value);
+auto HashTable::Rehash() -> void {
+  size_all_non_nullptr_ = 0;
+  size_ = 0;
+  Node** arr_2 = new Node*[buffer_size_];
+  for (int i = 0; i < buffer_size_; ++i) arr_2[i] = nullptr;
+  std::swap(arr_, arr_2);
+  for (int i = 0; i < buffer_size_; ++i) {
+    if (arr_2[i] && arr_2[i]->state_) Add(arr_2[i]->key_, arr_2[i]->data_);
   }
   // удаление предыдущего массива
-  for (int i = 0; i < buffer_size; ++i)
-    if (arr2[i]) delete arr2[i];
-  delete[] arr2;
+  for (int i = 0; i < buffer_size_; ++i)
+    if (arr_2[i]) delete arr_2[i];
+  delete[] arr_2;
 }
 
-// 
-// s21::key_type HashTable::Find(const T& value) {
-//   int h1 =
-//       hash1(value, buffer_size);  // значение, отвечающее за начальную позицию
-//   int h2 =
-//       hash2(value, buffer_size);  // значение, ответственное за "шаг" по таблице
-//   int i = 0;
-//   while (arr[h1] != nullptr && i < buffer_size) {
-//     if (arr[h1]->value == value && arr[h1]->state)
-//       return true;  // такой элемент есть
-//     h1 = (h1 + h2) % buffer_size;
-//     ++i;  // если у нас i >=  buffer_size, значит мы уже обошли абсолютно все
-//           // ячейки, именно для этого мы считаем i, иначе мы могли бы
-//           // зациклиться.
-//   }
-//   return false;
-// }
+auto HashTable::FindRecord(const key_type& key) -> Node* {
+  int h1 =
+      hash1(key, buffer_size_);  // значение, отвечающее за начальную позицию
+  int h2 =
+      hash2(key, buffer_size_);  // значение, ответственное за "шаг" по таблице
+  int i = 0;
+  while (arr_[h1] != nullptr && i < buffer_size_) {
+    if (arr_[h1]->key_ == key && arr_[h1]->state_)
+      return arr_[h1];  // такой элемент есть
+    h1 = (h1 + h2) % buffer_size_;
+    ++i;  // если у нас i >=  buffer_size_, значит мы уже обошли абсолютно все
+    // ячейки, именно для этого мы считаем i, иначе мы могли бы
+    // зациклиться.
+  }
+  return nullptr;
+}
 
-
-bool HashTable::Add(const key_type& key) {
-  if (size + 1 > int(rehash_size * buffer_size))
+auto HashTable::Add(const key_type& key, const record& data) -> bool {
+  if (size_ + 1 > int(rehash_size_ * buffer_size_))
     Resize();
-  else if (size_all_non_nullptr > 2 * size)
+  else if (size_all_non_nullptr_ > 2 * size_)
     Rehash();  // происходит рехеш, так как слишком много deleted-элементов
-  int h1 = hash1(key, buffer_size);
-  int h2 = hash2(key, buffer_size);
+  int h1 = hash1(key, buffer_size_);
+  int h2 = hash2(key, buffer_size_);
   int i = 0;
   int first_deleted = -1;  // запоминаем первый подходящий (удаленный) элемент
-  while (arr[h1] != nullptr && i < buffer_size) {
-    if (arr[h1]->value == key && arr[h1]->state)
+  while (arr_[h1] != nullptr && i < buffer_size_) {
+    if (arr_[h1]->key_ == key && arr_[h1]->state_)
       return false;  // такой элемент уже есть, а значит его нельзя вставлять
                      // повторно
-    if (!arr[h1]->state &&
+    if (!arr_[h1]->state_ &&
         first_deleted == -1)  // находим место для нового элемента
       first_deleted = h1;
-    h1 = (h1 + h2) % buffer_size;
+    h1 = (h1 + h2) % buffer_size_;
     ++i;
   }
-  if (first_deleted ==
-      -1)  // если не нашлось подходящего места, создаем новый Node
+  if (first_deleted == -1)
+  // если не нашлось подходящего места, создаем новый Node
   {
-    arr[h1] = new Node(value);
-    ++size_all_non_nullptr;  // так как мы заполнили один пробел, не забываем
-                             // записать, что это место теперь занято
+    arr_[h1] = new Node(key, data);
+    ++size_all_non_nullptr_;  // так как мы заполнили один пробел, не забываем
+                              // записать, что это место теперь занято
   } else {
-    arr[first_deleted]->value = value;
-    arr[first_deleted]->state = true;
+    arr_[first_deleted]->key_ = key;
+    arr_[first_deleted]->data_ = data;
+    arr_[first_deleted]->state_ = true;
   }
-  ++size;  // и в любом случае мы увеличили количество элементов
+  ++size_;  // и в любом случае мы увеличили количество элементов
   return true;
 }

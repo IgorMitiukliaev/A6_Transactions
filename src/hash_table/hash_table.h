@@ -17,42 +17,52 @@ class HashTable : public BaseClass {
   HashTable();
   ~HashTable();
   auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record_type &;
+  auto Get(const key_type &) -> record_nullable;
   auto Exist(const key_type &) -> bool;
   auto Del(const key_type &) -> bool;
   auto Update(const record_type &) -> bool;
-  auto Keys() -> void;
+  auto Keys() -> std::vector<key_type>;
   auto Rename(const key_type &, const key_type &) -> bool;
   auto TTL(const key_type &) -> int;
-  auto Find(const Person &) -> std::vector<key_type>;
-  auto ShowAll() -> void;
+  auto Find(const Person &, int) -> std::vector<key_type>;
+  auto ShowAll() -> std::vector<record *>;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
 
-
-
  private:
-  static const int default_size = 8;  // начальный размер нашей таблицы
-  constexpr static const double rehash_size =
-      0.75;  // коэффициент, при котором произойдет увеличение таблицы
+  static const int default_size_ = 8;  // начальный размер нашей таблицы
+  constexpr static const double rehash_size_ = 0.75;
+  // коэффициент, при котором произойдет увеличение таблицы
+
   struct Node {
     key_type key_;
-    Person data_;
+    record data_;
     bool state_;  // если значение флага state = false, значит элемент массива
-                 // был удален (deleted)
-    Node(const record_type &rec) : key(rec.), state(true) {}
-  };
-  Node **arr;  // соответственно в массиве будут хранится структуры Node*
-  int size;  // сколько элементов у нас сейчас в массиве (без учета deleted)
-  int buffer_size;  // размер самого массива, сколько памяти выделено под
-                    // хранение нашей таблицы
-  int size_all_non_nullptr;  // сколько элементов у нас сейчас в массиве (с
-                             // учетом deleted)
+                  // был удален (deleted)
+    Node(const record_type record)
+        : key_(record.first), data_(record.second), state_(true) {}
 
-  bool Add(const key_type &key);
+    Node(const key_type &key, const record &data)
+        : key_(key), data_(data), state_(true) {}
+  };
+  Node **arr_;  // соответственно в массиве будут хранится структуры Node*
+  int size_;  // сколько элементов у нас сейчас в массиве (без учета deleted)
+  int buffer_size_;  // размер самого массива, сколько памяти выделено под
+                     // хранение нашей таблицы
+  int size_all_non_nullptr_;  // сколько элементов у нас сейчас в массиве (с
+                              // учетом deleted)
+
+  // bool Add(const Node &unit);
+
+  // auto Add(const key_type &key, const record &data) -> bool;
   auto Resize() -> void;
   auto Rehash() -> void;
+  auto Add(const key_type &key, const record &data) -> bool;
+  // auto FindRecord(Node *p, key_type k) -> Node *auto Resize() -> void;
+
+  auto FindRecord(const key_type &key) -> Node *;
+  auto CheckNode(const key_type &key, const Person &person, int mask) -> bool;
 };
 
 }  // namespace s21

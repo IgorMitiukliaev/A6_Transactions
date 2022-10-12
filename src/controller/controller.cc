@@ -6,44 +6,24 @@
 
 using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
-// using HashTable = s21::HashTable;
+using HashTable = s21::HashTable;
 
 auto Controller::Init(const BaseType type) -> void {
   if (type == HASH)
-    ;
-  // model_ = new ::HashTable;
+    model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-
-  // model_->Set(record_type("5", record(Person("SN5", "N5", 1980, "C", 10),
-  //                                     std::time(0), 0, MASK_ALL)));
-  // model_->Set(record_type("2", record(Person("SN2", "N2", 1990, "C", 10),
-  //                                     std::time(0), 20, MASK_ALL)));
-  // model_->Set(record_type("3", record(Person("SN3", "N3", 1950, "Q", 10),
-  //                                     std::time(0), 0, MASK_ALL)));
-  // model_->Set(record_type("1", record(Person("SN1", "N1", 1980, "C", 10),
-  //                                     std::time(0), 0, MASK_ALL)));
-  // std::optional<std::reference_wrapper<record>> a = model_->Get("1");
-  // std::cout << a.value().get().person_.surname_ << std::endl;
-  // std::cout << model_->Get("2").value().get().person_.ShowData() << std::endl;
-  // std::cout << model_->TTL("2") << std::endl;
-  // model_->Del("2");
-  // model_->Clear();
-  // std::cout << "OK\n";
   UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
   std::cout << ShowKeys();
 };
 
-auto Controller::UploadData(const std::string& path) -> bool {
+auto Controller::UploadData(const std::string& path) -> int {
   model_->Clear();
   std::ifstream filestream(path);
   std::regex r_num(R"(\b([[:digit:]]+)\b)", std::regex::ECMAScript);
   std::regex r_key(R"(^([[:alnum:]]+)\b)", std::regex::ECMAScript);
   std::regex r_str(R"(\"(.*?)\")", std::regex::ECMAScript);
-
-  std::smatch m;
-
-  // int row = 0;
+  int row = 0;
   bool read_on = true;
   if (filestream.is_open()) {
     std::string buffer = "", field = "", surname = "", key = "", name = "",
@@ -74,22 +54,26 @@ auto Controller::UploadData(const std::string& path) -> bool {
       std::cout << key << " | " << surname << " | " << name << " | "
                 << birth_year << " | " << city << " | " << balance << std::endl;
       buffer.clear();
+      row++;
     }
     filestream.close();
-    return true;
   } else {
     std::cout << "Could not read file\n" << std::endl;
-    return false;
   }
-
+  return row;
   // std::vector<record*> data = model_->ShowAll();
 };
 
-auto Controller::ExportData(const std::string& input_str) -> bool {
-  std::cout << input_str << std::endl;
-
+auto Controller::ExportData(const std::string& path) -> int {
   std::vector<record*> data = model_->ShowAll();
-  return true;
+  int rows = 0;
+  if (data.size() > 0) {
+    std::ofstream filestream(path);
+
+    
+  }
+
+  return rows;
 };
 
 auto Controller::AddElement(const std::string key, const std::string surname,
