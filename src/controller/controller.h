@@ -21,7 +21,7 @@ class Controller {
 
   enum BaseType { HASH, SBT };
 
-  auto Command(std::string command) -> void;
+  auto Command(std::string command) -> std::string;
 
   auto Init(const BaseType type) -> void;
   auto Command(const std::string& in, std::string& out) -> void;

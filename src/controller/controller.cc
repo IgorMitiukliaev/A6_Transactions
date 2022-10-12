@@ -4,8 +4,10 @@ using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
-auto Controller::Command(std::string command) -> void {
-  std::cout << "command =" << command << std::endl;
+auto Controller::Command(std::string command) -> std::string {
+  std::string answer;
+  answer = command;
+  return answer;
 }
 
 auto Controller::Init(const BaseType type) -> void {
@@ -13,14 +15,14 @@ auto Controller::Init(const BaseType type) -> void {
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
-  std::cout << ShowKeys();
-  AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
-             5);
-  ShowAll();
-  ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
-  std::cout << ShowTTL("key3") << std::endl;
-  ShowAll();
+  // UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
+  // std::cout << ShowKeys();
+  // AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
+  //            5);
+  // ShowAll();
+  // ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
+  // std::cout << ShowTTL("key3") << std::endl;
+  // ShowAll();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {

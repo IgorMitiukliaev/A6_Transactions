@@ -23,6 +23,7 @@ private:
   auto ShooseSecondCommand() -> void;
   auto SwitchType(int) -> void;
   auto Input() -> std::string;
+  auto PressButton() -> void;
 
   auto Invalid() -> void;
   std::string line_top = "╔════════════════════════════════════════════════════"

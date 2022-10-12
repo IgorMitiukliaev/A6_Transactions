@@ -42,9 +42,6 @@ auto MainWindow::FirstMenu() -> void {
   std::cout << "║ 2. Binary search trees                                       "
                "                                         ║"
             << std::endl;
-  std::cout << "║ 3. Research                                                  "
-               "                                         ║"
-            << std::endl;
   std::cout << "║ 0. Exit                                                      "
                "                                         ║"
             << std::endl;
@@ -107,6 +104,7 @@ auto MainWindow::SecondMenu() -> void {
             << std::endl;
   std::cout << line_bottom << std::endl;
   std::cout << clear_csi_n;
+  std::cout << "Command: ";
 }
 
 auto MainWindow::ShooseFirstType() -> void {
@@ -117,13 +115,23 @@ auto MainWindow::ShooseFirstType() -> void {
       ShooseFirstType();
     }
   }
-  std::cin.clear();
   SwitchType(res);
 }
 
 auto MainWindow::ShooseSecondCommand() -> void {
+  std::system("clear");
+  SecondMenu();
   std::string src = Input();
-  controller_->Command(src);
+  if (src == "EXIT") {
+    controller_->ClearStorage();
+    std::system("clear");
+    FirstMenu();
+    ShooseFirstType();
+  } else {
+    std::string answer = controller_->Command(src);
+    std::cout << answer << std::endl;
+    PressButton();
+  }
 }
 
 auto MainWindow::SwitchType(int type) -> void {
@@ -131,18 +139,11 @@ auto MainWindow::SwitchType(int type) -> void {
   switch (type) {
   case 1:
     controller_->Init(::Controller::SBT);
-    SecondMenu();
     ShooseSecondCommand();
     break;
   case 2:
     controller_->Init(::Controller::HASH);
-    SecondMenu();
     ShooseSecondCommand();
-    break;
-  case 3:
-    // controller_->ClearStorage();
-    FirstMenu();
-    ShooseFirstType();
     break;
   default:
     break;
@@ -151,12 +152,26 @@ auto MainWindow::SwitchType(int type) -> void {
 
 auto MainWindow::Input() -> std::string {
   std::string str;
-  std::cin.clear();
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  // std::cin.clear();
+  // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   if (!std::getline(std::cin, str)) {
     exit(0);
+  } else {
+    if (str.empty()) {
+      str = Input();
+    }
   }
   return str;
+}
+
+auto MainWindow::PressButton() -> void {
+  std::cout << " <<<<  Press ENTER >>>>" << std::endl;
+  // std::string tmp;
+  if (std::cin.get() == '\n') {
+    ShooseSecondCommand();
+  } else {
+
+  }
 }
 
 auto MainWindow::Invalid() -> void {
