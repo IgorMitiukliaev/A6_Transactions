@@ -16,6 +16,7 @@ class Controller {
  public:
   enum BaseType { HASH, SBT };
   auto Init(const BaseType type) -> void;
+  auto Command(const std::string& in, std::string& out) -> void;
   auto AddElement(const std::string key, const std::string surname,
                   const std::string name, const int birth_year,
                   const std::string city, const int balance, int erase_time)
