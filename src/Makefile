@@ -24,6 +24,7 @@ all:
 build: clean $(SBT).a hash_table.a
 	mkdir -p $(BD)
 	$(CC) $(LDFLAGS) $(FILES) -o $(BD)transactions.out -L. -l$(SBT) -lhash_table
+	$(BD)transactions.out
 
 tests:
 
@@ -46,4 +47,5 @@ clean_hash:
 	rm -f hash_table.a libhash_table.a *o
 
 clean:
-	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno *.html *.out *.info *.dSYM report *.gch ./*/*.gch
+	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno \
+	*.html *.out *.info *.dSYM report *.gch ./*/*.gch

@@ -1,6 +1,6 @@
 #include "controller.h"
 
-#include <optional>
+
 #include <string>
 #include <vector>
 
@@ -8,13 +8,17 @@ using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
+auto Controller::Command(std::string command) -> void {
+  std::cout << "command =" << command << std::endl;
+}
+
 auto Controller::Init(const BaseType type) -> void {
   if (type == HASH)
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
-  std::cout << ShowKeys();
+  // UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
+  // std::cout << ShowKeys();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {

@@ -1,0 +1,28 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "g++ build active file",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-g",
+        "/home/igor/Algorithms/A6_Transactions-0/src/main.cc",
+        "/home/igor/Algorithms/A6_Transactions-0/src/controller/controller.cc",
+        "/home/igor/Algorithms/A6_Transactions-0/src/core/virtual_base.cc",
+        "/home/igor/Algorithms/A6_Transactions-0/src/hash_table/hash_table.cc",
+        "/home/igor/Algorithms/A6_Transactions-0/src/self_balancing_binary_search_tree/self_balancing_binary_search_tree.cc",
+        "/home/igor/Algorithms/A6_Transactions-0/src/view/console_interface.cc",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}",
+        "-lgtest"
+      ],
+      "options": {
+        "cwd": "/usr/bin"
+      }
+    }
+
+  ]
+}
