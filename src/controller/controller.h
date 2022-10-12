@@ -6,6 +6,7 @@
 #include <iostream>
 #include <regex>
 #include <vector>
+// #include <chrono>
 
 #include "../hash_table/hash_table.h"
 #include "../self_balancing_binary_search_tree/self_balancing_binary_search_tree.h"
@@ -29,10 +30,15 @@ class Controller {
                      const std::optional<std::string> city,
                      const std::optional<int> balance) -> bool;
   auto ShowKeys() -> std::string;
-  auto RenameKey(const std::string&) -> void;
-  auto FindElement(const std::string&) -> void;
-  auto ShowTTL(const std::string&) -> void;
-  auto ShowAll(const std::string&) -> void;
+  auto RenameKey(const key_type&, const key_type&) -> bool;
+  auto FindElement(const std::optional<std::string> surname,
+                   const std::optional<std::string> name,
+                   const std::optional<int> birth_year,
+                   const std::optional<std::string> city,
+                   const std::optional<int> balance) -> std::string;
+  auto ShowTTL(const std::string&) -> std::string;
+  auto ShowAll() -> void;
+  auto ShowAll(std::string&) -> void;
   auto UploadData(const std::string&) -> int;
   auto ExportData(const std::string&) -> int;
   auto ClearStorage() -> void;
