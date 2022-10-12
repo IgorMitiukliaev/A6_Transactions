@@ -11,7 +11,7 @@ using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
-auto Controller::Command(std::string command_str) -> void {
+auto Controller::Command(std::string command_str) -> std::string {
   std::vector<std::string> c(0);
   CommandRead(command_str, c);
   try {
@@ -49,6 +49,7 @@ auto Controller::Command(std::string command_str) -> void {
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   }
+  return "end";
 }
 
 auto Controller::CommandRead(const std::string& command_str,
