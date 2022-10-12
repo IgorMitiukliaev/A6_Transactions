@@ -78,8 +78,8 @@ class BaseClass {
   virtual auto TTL(const key_type &) -> int = 0;
   virtual auto Find(const Person &, int) -> std::vector<key_type> = 0;
   virtual auto ShowAll() -> std::vector<record *> = 0;
-  virtual auto Upload(const std::string &path) -> size_t = 0;
-  virtual auto Export(const std::string &path) -> size_t = 0;
+  // virtual auto Upload(const std::string &path) -> size_t = 0;
+  // virtual auto Export(const std::string &path) -> size_t = 0;
   virtual auto Clear() -> void = 0;
 };
 

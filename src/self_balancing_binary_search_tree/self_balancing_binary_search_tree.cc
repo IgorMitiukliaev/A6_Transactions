@@ -85,6 +85,7 @@ auto SBT::Remove(Node *p, key_type k) -> Node * {
 }
 
 auto SBT::Set(const record_type &new_record) -> bool {
+  Update();
   bool res = true;
   if (!root_)
     root_ = new Node(new_record);
@@ -109,12 +110,14 @@ auto SBT::FindRecord(Node *p, key_type k) -> Node * {
 
 auto SBT::Get(const key_type &k)
     -> std::optional<std::reference_wrapper<record>> {
+  Update();
   Node *n = FindRecord(root_, k);
   return n ? std::optional<std::reference_wrapper<record>>{n->data_}
            : std::nullopt;
 };
 
 auto SBT::Exist(const key_type &k) -> bool {
+  Update();
   return static_cast<bool>(FindRecord(root_, k));
 };
 
@@ -129,6 +132,7 @@ auto SBT::Del(const key_type &k) -> bool {
 };
 
 auto SBT::Update(const record_type &rec) -> bool {
+  Update();
   Node *node_for_update = FindRecord(root_, rec.first);
   bool res = static_cast<bool>(node_for_update);
   if (res) {
@@ -147,12 +151,14 @@ auto SBT::Update(const record_type &rec) -> bool {
 };
 
 auto SBT::Keys() -> std::vector<key_type> {
+  Update();
   std::vector<key_type> res(0);
   preOrder(root_, res);
   return res;
 };
 
 auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
+  Update();
   Node *node_for_rename = FindRecord(root_, old_key);
   bool res = false;
   if (static_cast<bool>(node_for_rename)) {
@@ -166,6 +172,7 @@ auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
 };
 
 auto SBT::TTL(const key_type &k) -> int {
+  Update();
   Node *node = FindRecord(root_, k);
   int res = -1;
   if (node && node->data_.erase_time_ > 0) {
@@ -177,24 +184,16 @@ auto SBT::TTL(const key_type &k) -> int {
 };
 
 auto SBT::Find(const Person &person, int mask) -> std::vector<key_type> {
+  Update();
   std::vector<key_type> res(0);
   preOrderFind(root_, person, mask, res);
   return res;
 };
 
 auto SBT::ShowAll() -> std::vector<record *> {
+  Update();
   std::vector<record *> res(0);
   preOrder(root_, res);
-  return res;
-};
-
-auto SBT::Upload(const std::string &path) -> size_t {
-  size_t res;
-  return res;
-};
-
-auto SBT::Export(const std::string &path) -> size_t {
-  size_t res;
   return res;
 };
 
@@ -267,8 +266,11 @@ auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
 
 auto SBT::Update() -> void {
   func_t f = [this](Node *p) {
-    time_t erase_time = p->data_.create_time_ + p->data_.erase_time_;
-    if (erase_time < std::time(NULL)) Del(p->key_);
+    if (p) {
+      if (p->data_.erase_time_ > 0 &&
+          p->data_.create_time_ + p->data_.erase_time_ < std::time(NULL))
+        Del(p->key_);
+    }
   };
   preOrder(root_, f);
 };

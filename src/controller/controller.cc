@@ -1,5 +1,6 @@
 #include "controller.h"
 
+#include <functional>
 #include <optional>
 #include <string>
 #include <vector>
@@ -15,6 +16,12 @@ auto Controller::Init(const BaseType type) -> void {
     model_ = new ::SBT;
   UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
   std::cout << ShowKeys();
+  AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
+             5);
+  ShowAll();
+  ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
+  std::cout << ShowTTL("key3") << std::endl;
+  ShowAll();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {
@@ -65,14 +72,24 @@ auto Controller::UploadData(const std::string& path) -> int {
 };
 
 auto Controller::ExportData(const std::string& path) -> int {
-  std::vector<record*> data = model_->ShowAll();
+  std::ofstream filestream(path, std::ios::out | std::ios::trunc);
   int rows = 0;
-  if (data.size() > 0) {
-    std::ofstream filestream(path);
-
-    
+  if (filestream.is_open()) {
+    std::vector<key_type> data = model_->Keys();
+    std::vector<key_type>::iterator iter = data.begin();
+    Person p;
+    while (iter != data.end()) {
+      filestream << *iter << " ";
+      p = model_->Get(*iter).value().get().person_;
+      filestream << " \"" << p.surname_ << "\" ";
+      filestream << " \"" << p.name_ << "\" ";
+      filestream << p.birth_year_ << " ";
+      filestream << " \"" << p.city_ << "\" ";
+      filestream << p.balance_ << std::endl;
+      iter++;
+    }
+    filestream.close();
   }
-
   return rows;
 };
 
@@ -131,4 +148,63 @@ auto Controller::ShowKeys() -> std::string {
   return res;
 }
 
-auto Controller::RenameKey(const std::string&) -> void{};
+auto Controller::RenameKey(const std::string& old_key,
+                           const std::string& new_key) -> bool {
+  return model_->Rename(old_key, new_key);
+}
+
+auto Controller::FindElement(const std::optional<std::string> surname,
+                             const std::optional<std::string> name,
+                             const std::optional<int> birth_year,
+                             const std::optional<std::string> city,
+                             const std::optional<int> balance) -> std::string {
+  std::vector<key_type> matched_keys;
+  std::string res;
+  int mask = 0b0;
+  if (surname) mask |= MASK_SURNAME;
+  if (name) mask |= MASK_NAME;
+  if (birth_year) mask |= MASK_BIRTH_YEAR;
+  if (city) mask |= MASK_CITY;
+  if (balance) mask |= MASK_BALANCE;
+
+  Person p(surname.value_or("-"), name.value_or("-"), birth_year.value_or(0),
+           city.value_or("-"), balance.value_or(0));
+  matched_keys = model_->Find(p, mask);
+  for (unsigned i = 0; i < matched_keys.size(); i++) {
+    res = res + matched_keys[i] + "\n";
+  }
+  return res;
+}
+
+auto Controller::ShowAll() -> void {
+  auto f = [this]() {
+    std::vector<record*> recs = model_->ShowAll();
+    for (unsigned i = 0; i < recs.size(); i++) {
+      std::cout << recs[i]->person_.ShowData() << std::endl;
+    }
+  };
+  f();
+}
+
+auto Controller::ShowAll(std::string& buffer) -> void {
+  std::vector<record*> recs = model_->ShowAll();
+  for (unsigned i = 0; i < recs.size(); i++) {
+    buffer += recs[i]->person_.ShowData() + "\n";
+  };
+}
+
+auto Controller::ClearStorage() -> void { model_->Clear(); }
+
+auto Controller::ShowTTL(const std::string& key_ttl) -> std::string {
+  std::string res = "(null)";
+  record_nullable rec = model_->Get(key_ttl);
+  if (rec) {
+    time_t create_time = model_->Get(key_ttl)->get().create_time_;
+    int erase_time_ = model_->Get(key_ttl)->get().erase_time_;
+    if (erase_time_ > 0) {
+      int duration = (create_time + erase_time_) - std::time(NULL);
+      res = std::to_string(duration);
+    }
+  }
+  return res;
+};
