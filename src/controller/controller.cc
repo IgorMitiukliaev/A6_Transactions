@@ -9,6 +9,10 @@ using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
+auto Controller::Command(std::string command) -> void {
+  std::cout << "command =" << command << std::endl;
+}
+
 auto Controller::Init(const BaseType type) -> void {
   if (type == HASH)
     model_ = new ::HashTable;
