@@ -29,6 +29,7 @@ class HashTable : public BaseClass {
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
+  inline auto GetType() -> s21::BaseType { return s21::HASH; };
 
  private:
   static const int default_size_ = 8;  // начальный размер нашей таблицы

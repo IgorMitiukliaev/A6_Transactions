@@ -43,6 +43,7 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void;
   auto Update() -> void;
+  inline auto GetType() -> s21::BaseType { return s21::SBT; };
 
  private:
   using func_t = std::function<void(Node *)>;

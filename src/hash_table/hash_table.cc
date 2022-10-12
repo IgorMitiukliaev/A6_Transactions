@@ -134,7 +134,7 @@ auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
 auto HashTable::ShowAll() -> std::vector<record*> {
   std::vector<record*> result(0);
   for (int i = 0; i < buffer_size_; i++) {
-    if (arr_[i]->state_) result.push_back(&arr_[i]->data_);
+    if (arr_[i] && arr_[i]->state_) result.push_back(&arr_[i]->data_);
   }
   return result;
 }

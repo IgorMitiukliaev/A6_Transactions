@@ -23,6 +23,7 @@ enum PersonMask {
   MASK_CITY = 0b00010,
   MASK_BALANCE = 0b00001
 };
+enum BaseType { HASH, SBT };
 
 class Person {
  public:
@@ -81,6 +82,7 @@ class BaseClass {
   // virtual auto Upload(const std::string &path) -> size_t = 0;
   // virtual auto Export(const std::string &path) -> size_t = 0;
   virtual auto Clear() -> void = 0;
+  virtual auto GetType() -> s21::BaseType = 0;
 };
 
 }  // namespace s21

@@ -12,44 +12,75 @@ using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
 
 auto Controller::Command(std::string command_str) -> std::string {
-  std::vector<std::string> c(0);
+  std::vector<std::string> c(0), res_v;
   CommandRead(command_str, c);
+  std::string res;
+  bool res_b;
   try {
     if (c[0] == "SET") {
       int erase_time = -1;
       if (c[7] == "EX") erase_time = std::stoi(c[8]);
-      AddElement(c[1], c[2], c[3], std::stoi(c[4]), c[5], std::stoi(c[6]),
-                 erase_time);
-      ShowAll();
+      res_b = AddElement(c[1], c[2], c[3], std::stoi(c[4]), c[5],
+                         std::stoi(c[6]), erase_time);
+      res = res_b ? "OK" : "Unable to perform " + c[0];
     } else if (c[0] == "GET") {
-      GetElement(c[1]);
+      res = GetElement(c[1]);
     } else if (c[0] == "EXISTS") {
-      ExistElement(c[1]);
+      res_b = ExistElement(c[1]);
+      res = res_b ? "OK" : "Unable to perform " + c[0];
     } else if (c[0] == "DEL") {
-      DeleteElement(c[1]);
+      res_b = DeleteElement(c[1]);
+      res = res_b ? "OK" : "Unable to perform " + c[0];
     } else if (c[0] == "UPDATE") {
-      UpdateElement(
+      res_b = UpdateElement(
           c[1], c[2] == "-" ? std::nullopt : std::optional<std::string>(c[2]),
           c[3] == "-" ? std::nullopt : std::optional<std::string>(c[3]),
           c[4] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[4])),
           c[5] == "-" ? std::nullopt : std::optional<std::string>(c[5]),
           c[6] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[6])));
+      res = res_b ? "OK" : "Unable to perform " + c[0];
     } else if (c[0] == "KEYS") {
+      res = ShowKeys();
     } else if (c[0] == "RENAME") {
+      res_b = RenameKey(c[1], c[2]);
+      res = res_b ? "OK" : "Unable to perform " + c[0];
     } else if (c[0] == "TTL") {
+      res = ShowTTL(c[1]);
     } else if (c[0] == "FIND") {
+      res = FindElement(
+          c[1] == "-" ? std::nullopt : std::optional<std::string>(c[1]),
+          c[2] == "-" ? std::nullopt : std::optional<std::string>(c[2]),
+          c[3] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[3])),
+          c[4] == "-" ? std::nullopt : std::optional<std::string>(c[4]),
+          c[5] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[5])));
     } else if (c[0] == "SHOWALL") {
+      ShowAll(res);
     } else if (c[0] == "UPLOAD") {
+      res = std::to_string(UploadData(c[1]));
     } else if (c[0] == "EXPORT") {
+      res = std::to_string(ExportData(c[1]));
     } else if (c[0] == "CLEAR") {
+      ClearStorage();
+      res = "Storage is empty";
     } else if (c[0] == "STORAGE") {
+      model_->Clear();
+      if (model_->GetType() == s21::HASH) {
+        model_ = new s21::SelfBalancingBinarySearchTree;
+        res = "Storage type set to AVL Tree";
+      } else {
+        model_ = new s21::HashTable;
+        res = "Storage type set to HashTable";
+      }
     } else if (c[0] == "EXIT") {
+      res = "Goodbye!";
     } else {
+      res = "Incorrect Program";
     }
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   }
-  return "end";
+  std::cout << res << std::endl;
+  return res;
 }
 
 auto Controller::CommandRead(const std::string& command_str,
@@ -125,9 +156,6 @@ auto Controller::UploadData(const std::string& path) -> int {
       record rec(p, std::time(NULL), -1, MASK_ALL);
       record_type rec_t(key, rec);
       model_->Set(rec_t);
-
-      std::cout << key << " | " << surname << " | " << name << " | "
-                << birth_year << " | " << city << " | " << balance << std::endl;
       buffer.clear();
       row++;
     }
