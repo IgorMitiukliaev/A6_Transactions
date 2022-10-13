@@ -1,31 +1,7 @@
 #include "hash_table.h"
 
-// using s21::hash1;
-// using s21::hash2;
 using s21::HashTable;
-
 using std::cout;
-
-// int s21::HashFunctionHorner(const std::string& s, int table_size,
-//                             const int key) {
-//   int hash_result = 0;
-//   for (int i = 0; s[i] != s.size(); ++i) {
-//     hash_result = (key * hash_result + s[i]) % table_size;
-//     std::cout << "hash_result " << hash_result << std::endl;
-//   }
-//   hash_result = (hash_result * 2 + 1) % table_size;
-//   return hash_result;
-// }
-
-// int s21::hash1(const std::string& s, int table_size) {
-//   return HashFunctionHorner(s, table_size, table_size - 1);
-//   // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и
-//   // минус один.
-// }
-
-// int s21::hash2(const std::string& s, int table_size) {
-//   return HashFunctionHorner(s, table_size, table_size + 1);
-// }
 
 HashTable::HashTable() {
   buffer_size_ = default_size_;
@@ -34,9 +10,7 @@ HashTable::HashTable() {
   arr_ = new Node*[buffer_size_];
   for (int i = 0; i < buffer_size_; i++) {
     arr_[i] = new Node();
-  }  // nullptr;
-  // заполняем nullptr - то есть если значение отсутствует,
-  // и никто раньше по этому адресу не обращался
+  }
 }
 
 HashTable::~HashTable() {
@@ -54,8 +28,6 @@ auto HashTable::Set(const record_type& record) -> bool {
   }
   return result;
 }
-
-// auto HashTable::Get(const key_type&) -> record& {}
 
 auto HashTable::Get(const key_type& key)
     -> std::optional<std::reference_wrapper<record>> {
@@ -166,14 +138,10 @@ auto HashTable::Clear() -> void {
   for (int i = 0; i < buffer_size_; i++) {
     if (!arr_[i]->empty_) {
       arr_[i]->key_ = "";
-      // arr_[i]->data_ = {"", "", -1, "", 0};
       arr_[i]->empty_ = true;
     }
   }
   size_ = 0;
-  // std::cout << "Clear!" << std::endl;
-  //   if (arr_[i]) delete arr_[i];
-  // delete[] arr_;
 }
 
 auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
@@ -181,7 +149,6 @@ auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
   bool result = true;
   Node* node = FindRecord(key);
   Person& person_for_check = node->data_.person_;
-  // Person& person_for_update = node_for_update->data_.person_
   if (result && mask & MASK_SURNAME &&
       person_for_check.surname_ != person.surname_)
     result = false;
@@ -235,13 +202,13 @@ auto HashTable::Rehash() -> void {
 
 auto HashTable::FindRecord(const key_type& key) -> Node* {
   int h1 = Hash1(key);  // значение, отвечающее за начальную позицию
-  // int h2 = Hash2(key);  // значение, ответственное за "шаг" по таблице
+  int h2 = Hash2(key);  // значение, ответственное за "шаг" по таблице
   int i = 0;
   while (!arr_[h1]->empty_ && i < buffer_size_) {
     if (arr_[h1]->key_ == key && arr_[h1]->state_)
       return arr_[h1];  // такой элемент есть
     i++;
-    h1 = (h1 + 2 * i) % buffer_size_;
+    h1 = (h1 + i * h2) % buffer_size_;
     // если у нас i >=  buffer_size_, значит мы уже обошли абсолютно все
     // ячейки, именно для этого мы считаем i, иначе мы могли бы
     // зациклиться.
@@ -251,104 +218,53 @@ auto HashTable::FindRecord(const key_type& key) -> Node* {
 
 auto HashTable::Add(const key_type& key, const record& data) -> bool {
   if (size_ + 1 > int(rehash_size_ * buffer_size_)) {
-    std::cout << "++++++++++++++++++++++++Resize!!!" << std::endl;
+    // std::cout << "++++++++++++++++++++++++Resize!!!" << std::endl;
     Resize();
   } else if (size_all_non_nullptr_ > 2 * size_) {
-    std::cout << "++++++++++++++++++++++++Rehash!!!" << std::endl;
+    // std::cout << "++++++++++++++++++++++++Rehash!!!" << std::endl;
     Rehash();  // происходит рехеш, так как слишком много deleted-элементов
   }
   int h1 = Hash1(key);
-  // int h2 = Hash2(key);
+  int h2 = Hash2(key);
   int i = 0;
-
-  std::cout << "h1 " << h1 << std::endl;
-  // std::cout << "h2 " << h2 << std::endl;
-
-  int first_deleted = -1;  // запоминаем первый подходящий (удаленный) элемент
-
-  // for (int i = 0; i < buffer_size_; i++) {
-  //   // std::cout << "While()!!!" << std::endl;
-  //   // такой элемент уже есть, а значит его нельзя вставлять
-  //   // повторно
-  //   if (arr_[i]->key_ == key && arr_[h1]->state_) {
-  //     return false;
-  //   }
-  //   if (arr_[i] != nullptr && !arr_[h1]->state_) {
-  //     // нашли место для нового элемента
-  //     first_deleted = i;
-  //     break;
-  //   }
-  // }
+  int temp_pos = -1;  // запоминаем первый подходящий (удаленный) элемент
 
   while (arr_[h1] && !arr_[h1]->empty_ && i < buffer_size_) {
-    std::cout << "While()!!!" << std::endl;
+    // std::cout << "While()!!!" << std::endl;
     if (arr_[h1]->key_ == key && arr_[h1]->state_)
       return false;  // такой элемент уже есть, а значит его нельзя вставлять
                      // повторно
     if (arr_[h1]->key_ != "" && !arr_[h1]->state_) {
-      std::cout << "Find place!" << std::endl;
+      // std::cout << "Find place!" << std::endl;
       // нашли место для нового элемента
-      first_deleted = h1;
+      temp_pos = h1;
       break;
     }
     i++;
-    h1 = (h1 + i * 2) % buffer_size_;
+    h1 = (h1 + i * h2) % buffer_size_;
     std::cout << "new h1 " << h1 << std::endl;
   }
 
-  if (first_deleted == -1) first_deleted = h1;
-  std::cout << "=======fill Node #" << first_deleted << std::endl;
-  // if (arr_[first_deleted] != nullptr) {
-  arr_[first_deleted]->key_ = key;
-  arr_[first_deleted]->data_ = data;
-  arr_[first_deleted]->state_ = true;
-  arr_[first_deleted]->empty_ = false;
-  // }
-
-  // if (first_deleted == -1)
-  // // если не нашлось подходящего места, создаем новый Node
-  // {
-  //   std::cout << "======= Node #" << h1 << std::endl;
-  //   arr_[h1] = new Node(key, data);
-  //   ++size_all_non_nullptr_;  // так как мы заполнили один пробел, не
-  //   забываем
-  //   // записать, что это место теперь занято
-  // } else {
-  //   std::cout << "=======fill Node #" << first_deleted << std::endl;
-  //   if (arr_[first_deleted] != nullptr) {
-  //     arr_[first_deleted]->key_ = key;
-  //     arr_[first_deleted]->data_ = data;
-  //     arr_[first_deleted]->state_ = true;
-  //     arr_[first_deleted]->empty_ = false;
-  //   }
+  if (temp_pos == -1) temp_pos = h1;
+  // std::cout << "=======fill Node #" << temp_pos << std::endl;
+  // if (arr_[temp_pos] != nullptr) {
+  arr_[temp_pos]->key_ = key;
+  arr_[temp_pos]->data_ = data;
+  arr_[temp_pos]->state_ = true;
+  arr_[temp_pos]->empty_ = false;
   // }
 
   size_++;  // и в любом случае мы увеличили количество элементов
-  std::cout << "size_ " << size_ << std::endl;
+  // std::cout << "size_ " << size_ << std::endl;
   return true;
 }
 
-// auto HashTable::HashFunctionHorner(const std::string& s, int table_size,
-//                                    const int key) -> int {
-//   int hash_result = 0;
-//   for (int i = 0; s[i] != s.size(); i++) {
-//     hash_result = (key * hash_result + s[i]) % table_size;
-//     // std::cout << "hash_result " << hash_result << std::endl;
-//   }
-//   hash_result = (hash_result * 2 + 1) % table_size;
-//   if (hash_result < 0) hash_result *= -1;
-//   // std::cout << "hash_result result: " << hash_result << std::endl;
-//   return hash_result;
-// }
-
 auto HashTable::Hash1(const std::string& key) -> int {
-  // return HashFunctionHorner(s, table_size, table_size - 1);
   return (std::hash<std::string>{}(key)) % buffer_size_;
   // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и
   // минус один.
 }
 
 auto HashTable::Hash2(const std::string& key) -> int {
-  // return HashFunctionHorner(s, table_size, table_size + 1);
-  return ((std::hash<std::string>{}(key)) + 1) % buffer_size_;
+  return ((std::hash<std::string>{}(key)) - 1) % buffer_size_;
 }
