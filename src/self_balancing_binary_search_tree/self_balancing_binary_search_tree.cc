@@ -252,7 +252,7 @@ auto SBT::preOrderFind(Node *p, const Person &person, int mask,
 
 auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
   bool res = true;
-  Person &person_for_check = p->data_.person_;
+  const Person &person_for_check = p->data_.person_;
   if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
     res = false;
   if (res && mask & MASK_NAME && person_for_check.name_ != person.name_)

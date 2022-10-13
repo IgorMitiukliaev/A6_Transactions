@@ -15,20 +15,20 @@ class HashTable : public BaseClass {
  public:
   HashTable();
   ~HashTable();
-  auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record_nullable;
-  auto Exist(const key_type &) -> bool;
-  auto Del(const key_type &) -> bool;
-  auto Update(const record_type &) -> bool;
-  auto Keys() -> std::vector<key_type>;
-  auto Rename(const key_type &, const key_type &) -> bool;
-  auto TTL(const key_type &) -> int;
-  auto Find(const Person &, int) -> std::vector<key_type>;
-  auto ShowAll() -> std::vector<record *>;
+  auto Set(const record_type &) -> bool override;
+  auto Get(const key_type &) -> record_nullable override;
+  auto Exist(const key_type &) -> bool override;
+  auto Del(const key_type &) -> bool override;
+  auto Update(const record_type &) -> bool override;
+  auto Keys() -> std::vector<key_type> override;
+  auto Rename(const key_type &, const key_type &) -> bool override;
+  auto TTL(const key_type &) -> int override;
+  auto Find(const Person &, int) -> std::vector<key_type> override;
+  auto ShowAll() -> std::vector<record *> override;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
-  auto Clear() -> void;
-  inline auto GetType() -> s21::BaseType { return s21::HASH; };
+  auto Clear() -> void override;
+  inline auto GetType() -> s21::BaseType override { return s21::HASH; };
 
  private:
   static const int default_size_ = 8;  // начальный размер нашей таблицы

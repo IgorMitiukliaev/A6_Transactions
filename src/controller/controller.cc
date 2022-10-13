@@ -184,7 +184,7 @@ auto Controller::ExportData(const std::string& path) -> int {
       filestream << p.birth_year_ << " ";
       filestream << " \"" << p.city_ << "\" ";
       filestream << p.balance_ << std::endl;
-      iter++;
+      ++iter;
     }
     filestream.close();
   }
