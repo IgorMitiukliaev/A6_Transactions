@@ -5,12 +5,14 @@ https://habr.com/ru/post/509220/
 #ifndef SRC_HASH_TABLE_HASH_TABLE_H_
 #define SRC_HASH_TABLE_HASH_TABLE_H_
 
+#include <iostream>
+
 #include "../core/virtual_base.h"
 
 namespace s21 {
-int HashFunctionHorner(const std::string &s, int table_size, const int key);
-int hash1(const std::string &s, int table_size);
-int hash2(const std::string &s, int table_size);
+// int HashFunctionHorner(const std::string &s, int table_size, const int key);
+// int hash1(const std::string &s, int table_size);
+// int hash2(const std::string &s, int table_size);
 
 class HashTable : public BaseClass {
  public:
@@ -53,14 +55,13 @@ class HashTable : public BaseClass {
   int size_all_non_nullptr_;  // сколько элементов у нас сейчас в массиве (с
                               // учетом deleted)
 
-  // bool Add(const Node &unit);
-
-  // auto Add(const key_type &key, const record &data) -> bool;
+  auto HashFunctionHorner(const std::string &s, int table_size, const int key)
+      -> int;
+  auto Hash1(const std::string &s, int table_size) -> int;
+  auto Hash2(const std::string &s, int table_size) -> int;
   auto Resize() -> void;
   auto Rehash() -> void;
   auto Add(const key_type &key, const record &data) -> bool;
-  // auto FindRecord(Node *p, key_type k) -> Node *auto Resize() -> void;
-
   auto FindRecord(const key_type &key) -> Node *;
   auto CheckNode(const key_type &key, const Person &person, int mask) -> bool;
 };

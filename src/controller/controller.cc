@@ -15,11 +15,21 @@ auto Controller::Init(const BaseType type) -> void {
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  // UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
-  // std::cout << ShowKeys();
-  // AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
-  //            5);
-  // ShowAll();
+
+  UploadData(
+      "/Users/pfidelia/Schule_21/Meine_Projekte/A6_Transactions-0/src/"
+      "test.txt");
+
+  AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
+             5);
+  // // // ShowAll();
+  AddElement("key4", "Verter2", "Робот, просто робот", 1976, "Smartville", 100,
+             5);
+  AddElement("key5", "Verter3", "Робот, просто робот", 1977, "Smartville", 100,
+             5);
+
+  ShowAll();
+  std::cout << ShowKeys();
   // ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
   // std::cout << ShowTTL("key3") << std::endl;
   // ShowAll();
