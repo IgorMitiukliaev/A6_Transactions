@@ -27,10 +27,11 @@ auto Controller::Command(std::string command_str) -> std::string {
       res = GetElement(c[1]);
     } else if (c[0] == "EXISTS") {
       res_b = ExistElement(c[1]);
-      res = res_b ? "OK" : "Unable to perform " + c[0];
+      res = res_b ? "OK" : "Key " + c[1] + " doesn't exist";
     } else if (c[0] == "DEL") {
       res_b = DeleteElement(c[1]);
-      res = res_b ? "OK" : "Unable to perform " + c[0];
+      res = res_b ? "Deleted"
+                  : "Key " + c[1] + " doesn't exist, unable to delete";
     } else if (c[0] == "UPDATE") {
       res_b = UpdateElement(
           c[1], c[2] == "-" ? std::nullopt : std::optional<std::string>(c[2]),
@@ -38,12 +39,13 @@ auto Controller::Command(std::string command_str) -> std::string {
           c[4] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[4])),
           c[5] == "-" ? std::nullopt : std::optional<std::string>(c[5]),
           c[6] == "-" ? std::nullopt : std::optional<int>(std::stoi(c[6])));
-      res = res_b ? "OK" : "Unable to perform " + c[0];
+      res = res_b ? "OK" : "Key " + c[1] + " doesn't exist, unable to update";
     } else if (c[0] == "KEYS") {
       res = ShowKeys();
     } else if (c[0] == "RENAME") {
       res_b = RenameKey(c[1], c[2]);
-      res = res_b ? "OK" : "Unable to perform " + c[0];
+      res = res_b ? "Key " + c[1] + " set to " + c[2]
+                  : "Key " + c[1] + " doesn't exist, unable to delete";
     } else if (c[0] == "TTL") {
       res = ShowTTL(c[1]);
     } else if (c[0] == "FIND") {
@@ -74,12 +76,11 @@ auto Controller::Command(std::string command_str) -> std::string {
     } else if (c[0] == "EXIT") {
       res = "Goodbye!";
     } else {
-      res = "Incorrect Program";
+      res = "Incorrect command";
     }
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   }
-  std::cout << res << std::endl;
   return res;
 }
 

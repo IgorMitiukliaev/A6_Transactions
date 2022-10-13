@@ -64,17 +64,33 @@ auto SBT::RemoveMin(Node *p) -> Node * {
   return Balance(p);
 }
 
-auto SBT::Remove(Node *p, key_type k) -> Node * {
+auto SBT::Del(const key_type &k) -> bool {
+  bool res = false;
+  if (root_ && root_->key_ == k && root_->left_ == root_->right_ &&
+      root_->right_ == nullptr) {
+    delete root_;
+    root_ = nullptr;
+    return true;
+  }
+  Node *new_root = Remove(root_, k, res);
+  if (new_root) {
+    root_ = new_root;
+  }
+  return res;
+}
+
+auto SBT::Remove(Node *p, key_type k, bool &res) -> Node * {
   if (!p) return 0;
   if (k < p->key_)
-    p->left_ = Remove(p->left_, k);
+    p->left_ = Remove(p->left_, k, res);
   else if (k > p->key_)
-    p->right_ = Remove(p->right_, k);
-  else  //  k == p->key
-  {
+    p->right_ = Remove(p->right_, k, res);
+  //  k == p->key
+  else {
     Node *l = p->left_;
     Node *r = p->right_;
     delete p;
+    res = true;
     if (!r) return l;
     Node *min = FindMin(r);
     min->right_ = RemoveMin(r);
@@ -121,16 +137,6 @@ auto SBT::Exist(const key_type &k) -> bool {
   return static_cast<bool>(FindRecord(root_, k));
 };
 
-auto SBT::Del(const key_type &k) -> bool {
-  bool res = false;
-  Node *new_root = Remove(root_, k);
-  if (new_root) {
-    root_ = new_root;
-    res = true;
-  }
-  return res;
-};
-
 auto SBT::Update(const record_type &rec) -> bool {
   Update();
   Node *node_for_update = FindRecord(root_, rec.first);
@@ -163,10 +169,8 @@ auto SBT::Rename(const key_type &old_key, const key_type &new_key) -> bool {
   bool res = false;
   if (static_cast<bool>(node_for_rename)) {
     res = true;
-    record rec = node_for_rename->data_;
-    record_type record_for_rename(new_key, rec);
-    Del(old_key);
-    Insert(root_, record_for_rename);
+    node_for_rename->key_ = new_key;
+    Balance(root_);
   }
   return res;
 };
@@ -211,13 +215,6 @@ auto SBT::Clear() -> void {
 auto SBT::preOrder(Node *p, std::vector<key_type> &res) -> void {
   if (p == nullptr) return;
   res.push_back(p->key_);
-  preOrder(p->left_, res);
-  preOrder(p->right_, res);
-}
-
-auto SBT::preOrder(Node *p, std::vector<Node *> &res) -> void {
-  if (p == nullptr) return;
-  res.push_back(p);
   preOrder(p->left_, res);
   preOrder(p->right_, res);
 }
