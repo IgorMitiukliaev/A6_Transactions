@@ -10,9 +10,6 @@ https://habr.com/ru/post/509220/
 #include "../core/virtual_base.h"
 
 namespace s21 {
-// int HashFunctionHorner(const std::string &s, int table_size, const int key);
-// int hash1(const std::string &s, int table_size);
-// int hash2(const std::string &s, int table_size);
 
 class HashTable : public BaseClass {
  public:
@@ -43,12 +40,19 @@ class HashTable : public BaseClass {
     record data_;
     bool state_;  // если значение флага state = false, значит элемент массива
                   // был удален (deleted)
+    bool empty_;  // если значение флага empty = true, значит элемент массива
+                  // пустой
     Node(const record_type record)
-        : key_(record.first), data_(record.second), state_(true) {}
+        : key_(record.first),
+          data_(record.second),
+          state_(true),
+          empty_(false) {}
 
     Node(const key_type &key, const record &data)
-        : key_(key), data_(data), state_(true) {}
+        : key_(key), data_(data), state_(true), empty_(false) {}
+    Node() : key_(""), data_(), state_(true), empty_(true) {}
   };
+
   Node **arr_;  // соответственно в массиве будут хранится структуры Node*
   int size_;  // сколько элементов у нас сейчас в массиве (без учета deleted)
   int buffer_size_;  // размер самого массива, сколько памяти выделено под
@@ -56,10 +60,8 @@ class HashTable : public BaseClass {
   int size_all_non_nullptr_;  // сколько элементов у нас сейчас в массиве (с
                               // учетом deleted)
 
-  auto HashFunctionHorner(const std::string &s, int table_size, const int key)
-      -> int;
-  auto Hash1(const std::string &s, int table_size) -> int;
-  auto Hash2(const std::string &s, int table_size) -> int;
+  auto Hash1(const std::string &s) -> int;
+  auto Hash2(const std::string &s) -> int;
   auto Resize() -> void;
   auto Rehash() -> void;
   auto Add(const key_type &key, const record &data) -> bool;
