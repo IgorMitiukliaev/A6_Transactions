@@ -1,4 +1,5 @@
 #include "console_interface.h"
+
 #include <ios>
 #include <limits>
 
@@ -172,7 +173,6 @@ auto MainWindow::PressButton() -> void {
   if (std::cin.get() == '\n') {
     ShooseSecondCommand();
   } else {
-
   }
 }
 
