@@ -16,20 +16,30 @@ auto Controller::Init(const BaseType type) -> void {
   else
     model_ = new ::SBT;
 
+  // AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville",
+  // 100,
+  //            5);
+  // // // // // // ShowAll();
+  // AddElement("key4", "Verter2", "Робот, просто робот", 1976, "Smartville",
+  // 100,
+  //            5);
+  // AddElement("key5", "Verter3", "Робот, просто робот", 1977, "Smartville",
+  // 100,
+  //            5);
+  // AddElement("key6", "Verter4", "Робот, просто робот", 1978, "Smartville",
+  // 100,
+  //            5);
+
+  // AddElement("key7", "Verter5", "Робот, просто робот", 1979, "Smartville",
+  // 100,
+  //            5);
   UploadData(
       "/Users/pfidelia/Schule_21/Meine_Projekte/A6_Transactions-0/src/"
       "test.txt");
 
-  AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville", 100,
-             5);
-  // // // ShowAll();
-  AddElement("key4", "Verter2", "Робот, просто робот", 1976, "Smartville", 100,
-             5);
-  AddElement("key5", "Verter3", "Робот, просто робот", 1977, "Smartville", 100,
-             5);
-
   ShowAll();
   std::cout << ShowKeys();
+
   // ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
   // std::cout << ShowTTL("key3") << std::endl;
   // ShowAll();
