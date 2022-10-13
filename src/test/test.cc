@@ -70,31 +70,36 @@ TEST(UPDATE_SBT, test) {
 }
 
 TEST(KEYS_SBT, test) {
-  std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::SBT>();
+  ::SBT *model_ = new ::SBT();
   s21::Person p("Surname", "Name Name", 1970, "City", 100);
   s21::Person p_new("Noname", "Noname", 2000, "No", 0);
   s21::record r(p);
   s21::record r_new(p_new);
   model_->Set(s21::record_type("key1", r));
   model_->Set(s21::record_type("key2", r_new));
+  model_->Set(s21::record_type("key3", r_new));
+  // model_->Del("key3");
   std::vector<s21::key_type> res = model_->Keys();
-  ASSERT_TRUE(res.size() == 2);
+  ASSERT_TRUE(res.size() == 3);
   ASSERT_TRUE((res[0] == "key1" && res[1] == "key2") ||
               (res[0] == "key2" && res[1] == "key1"));
+  model_->Clear();
+  delete model_;
 }
 
 TEST(RENAME_SBT, test) {
-  std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::SBT>();
+  std::unique_ptr<s21::BaseClass> model_(new ::SBT());
   s21::Person p("Surname", "Name Name", 1970, "City", 100);
   s21::record r(p);
   model_->Set(s21::record_type("key1", r));
   ASSERT_TRUE(model_->Rename("key1", "key2"));
   ASSERT_TRUE(model_->Get("key2").value().get().person_.ShowData() ==
               p.ShowData());
+  model_->Clear();
 }
 
 TEST(TTL_SBT, test) {
-  std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::SBT>();
+  ::SBT *model_ = new ::SBT();
   s21::Person p("Surname", "Name Name", 1970, "City", 100);
   s21::record r(p, std::time(NULL), 1, s21::MASK_ALL);
   model_->Set(s21::record_type("key1", r));
@@ -105,6 +110,8 @@ TEST(TTL_SBT, test) {
               p.ShowData());
   std::this_thread::sleep_for(std::chrono::seconds(2));
   ASSERT_FALSE(model_->Exist("key2"));
+  model_->Clear();
+  delete model_;
 }
 
 TEST(FIND_SBT, test) {
@@ -120,7 +127,7 @@ TEST(FIND_SBT, test) {
 }
 
 TEST(SHOWALL_SBT, test) {
-  std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::SBT>();
+  ::SBT *model_ = new ::SBT();
   s21::Person p1("Surname1", "Name1", 1970, "City1", 100);
   s21::Person p2("Surname2", "Name2", 1990, "City2", 0);
   s21::Person p3("Surname3", "Name3", 1993, "City3", 0);
@@ -141,6 +148,8 @@ TEST(SHOWALL_SBT, test) {
   model_->Set(s21::record_type("k", r));
   std::vector<s21::record *> res = model_->ShowAll();
   ASSERT_TRUE(res.size() == 8);
+  model_->Clear();
+  delete model_;
 }
 
 TEST(CLEAR_SBT, test) {
@@ -153,6 +162,7 @@ TEST(CLEAR_SBT, test) {
   ASSERT_TRUE(res.size() == 0);
 }
 
+/*
 TEST(SET_GET_HashTable, test) {
   std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::HashTable>();
   s21::Person p("Surname", "Name Name", 1970, "City", 100);
@@ -292,7 +302,7 @@ TEST(CLEAR_HashTable, test) {
   ASSERT_TRUE(res.size() == 0);
 }
 
-
+*/
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

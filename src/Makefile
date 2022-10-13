@@ -5,6 +5,11 @@ OS=$(shell uname -s)
 
 BD= build/
 
+SRC = $(FILES_FOR_TEST)\
+	main.cc\
+	./view/console_interface.cc\
+	./controller/controller.cc
+
 FILES = $(SBT).a\
 	hash_table.a\
 	./view/console_interface.cc\
@@ -63,6 +68,20 @@ $(SBT).a: clean_sbt
 	ar rcs $(SBT).a *.o
 	ranlib $@
 	cp $@ lib$@
+
+memcheck: test_build
+	valgrind -s --tool=memcheck --track-origins=yes --leak-check=full --log-file=leaks.txt  ./tests.out
+	cat leaks.txt | grep -E 'lost|leaks'
+
+clang:
+	@cp ../materials/linters/.clang-format .clang-format
+	clang-format -n $(SRC)
+
+leaks:
+	leaks -atExit -- ./tests | grep LEAK
+
+cppcheck:
+	cppcheck --enable=all $(suppress) $(SRC)
 
 clean_sbt:
 	rm -f $(SBT).a lib$(SBT).a *o
