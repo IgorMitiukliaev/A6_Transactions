@@ -68,6 +68,7 @@ typedef std::pair<s21::key_type, s21::record> record_type;
 
 class BaseClass {
  public:
+  virtual ~BaseClass();
   virtual auto Set(const record_type &) -> bool = 0;
   virtual auto Get(const key_type &) -> record_nullable = 0;
   virtual auto Exist(const key_type &) -> bool = 0;
@@ -84,6 +85,8 @@ class BaseClass {
   virtual auto Clear() -> void = 0;
   virtual auto GetType() -> s21::BaseType = 0;
 };
+
+inline BaseClass::~BaseClass(){};
 
 }  // namespace s21
 

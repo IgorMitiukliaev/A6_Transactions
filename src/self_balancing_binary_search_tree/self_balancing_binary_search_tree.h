@@ -26,9 +26,8 @@ class SelfBalancingBinarySearchTree : public BaseClass {
     Node(record_type k)
         : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {}
   };
-  SelfBalancingBinarySearchTree() = default;
-  explicit SelfBalancingBinarySearchTree(record_type &record);
-  ~SelfBalancingBinarySearchTree() = default;
+  SelfBalancingBinarySearchTree();
+  ~SelfBalancingBinarySearchTree();
   auto Set(const record_type &) -> bool;
   auto Get(const key_type &) -> record_nullable;
   auto Exist(const key_type &) -> bool;
@@ -63,7 +62,8 @@ class SelfBalancingBinarySearchTree : public BaseClass {
       -> Node *;  // поиск узла с минимальным ключом в дереве p
   auto RemoveMin(Node *p)
       -> Node *;  // удаление узла с минимальным ключом из дерева p
-  auto Remove(Node *p, key_type k, bool &) -> Node *;  // удаление ключа k из дерева p
+  auto Remove(Node *p, key_type k, bool &)
+      -> Node *;  // удаление ключа k из дерева p
   auto FindRecord(Node *p, key_type k) -> Node *;
   auto preOrder(Node *p, std::vector<key_type> &res) -> void;
   auto preOrder(Node *p, std::vector<record *> &res) -> void;

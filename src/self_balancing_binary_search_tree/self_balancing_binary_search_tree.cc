@@ -4,9 +4,18 @@ using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using s21::record_type;
 
-SBT::SelfBalancingBinarySearchTree(s21::record_type &record) {
-  root_ = new Node(record);
-}
+SBT::SelfBalancingBinarySearchTree() : root_(nullptr) {}
+
+SBT::~SelfBalancingBinarySearchTree() {
+  func_t f = [this](Node *p) {
+    if (p) {
+      if (p->data_.erase_time_ > 0 &&
+          p->data_.create_time_ + p->data_.erase_time_ < std::time(NULL))
+        Del(p->key_);
+    }
+  };
+  preOrder(root_, f);
+};
 
 auto SBT::FixHeight(Node *p) -> void {
   unsigned char h_left = Height(p->left_);
@@ -103,12 +112,13 @@ auto SBT::Remove(Node *p, key_type k, bool &res) -> Node * {
 auto SBT::Set(const record_type &new_record) -> bool {
   Update();
   bool res = true;
-  if (!root_)
+  if (!root_) {
     root_ = new Node(new_record);
-  else if (FindRecord(root_, new_record.first))
+  } else if (FindRecord(root_, new_record.first)) {
     res = false;
-  else
+  } else {
     root_ = Insert(root_, new_record);
+  }
   return res && static_cast<bool>(root_);
 }
 
