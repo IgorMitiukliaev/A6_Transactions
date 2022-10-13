@@ -4,7 +4,7 @@ using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using s21::record_type;
 
-SBT::SelfBalancingBinarySearchTree() : root_(nullptr) {}
+SBT::SelfBalancingBinarySearchTree() : BaseClass::BaseClass(), root_(nullptr) {}
 
 SBT::~SelfBalancingBinarySearchTree() {
   func_t f = [this](Node *p) {
