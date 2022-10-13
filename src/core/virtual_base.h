@@ -1,18 +1,13 @@
 #ifndef SRC_CORE_VIRTUAL_BASE_H_
 #define SRC_CORE_VIRTUAL_BASE_H_
 
-#include <cstddef>
-#include <cstring>
 #include <ctime>
 #include <functional>
 #include <optional>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace s21 {
-
-class BaseClass;
 using key_type = std::string;
 
 enum PersonMask {
@@ -50,9 +45,9 @@ class Person {
 };
 
 struct record {
-  record() : person_(){};
-  record(Person person, time_t create_time = 0, int erase_time = -1,
-         int mask = MASK_ALL)
+  record() : person_(), mask_(MASK_ALL){};
+  explicit record(Person &person, time_t create_time = 0, int erase_time = -1,
+                  int mask = MASK_ALL)
       : person_(person),
         create_time_(create_time),
         erase_time_(erase_time),

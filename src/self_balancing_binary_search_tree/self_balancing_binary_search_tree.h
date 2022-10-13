@@ -17,32 +17,31 @@ namespace s21 {
 class SelfBalancingBinarySearchTree : public BaseClass {
  public:
   struct Node {
-    Node() = delete;
+    explicit Node(record_type k)
+        : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {};
     key_type key_;
     record data_;
     Node *left_;
     Node *right_;
     unsigned char height_;
-    Node(record_type k)
-        : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {}
   };
   SelfBalancingBinarySearchTree();
-  ~SelfBalancingBinarySearchTree();
-  auto Set(const record_type &) -> bool;
-  auto Get(const key_type &) -> record_nullable;
-  auto Exist(const key_type &) -> bool;
-  auto Del(const key_type &) -> bool;
-  auto Update(const record_type &) -> bool;
-  auto Keys() -> std::vector<key_type>;
-  auto Rename(const key_type &, const key_type &) -> bool;
-  auto TTL(const key_type &) -> int;
-  auto Find(const Person &, int mask) -> std::vector<key_type>;
-  auto ShowAll() -> std::vector<record *>;
+  ~SelfBalancingBinarySearchTree() override;
+  auto Set(const record_type &) -> bool override;
+  auto Get(const key_type &) -> record_nullable override;
+  auto Exist(const key_type &) -> bool override;
+  auto Del(const key_type &) -> bool override;
+  auto Update(const record_type &) -> bool override;
+  auto Keys() -> std::vector<key_type> override;
+  auto Rename(const key_type &, const key_type &) -> bool override;
+  auto TTL(const key_type &) -> int override;
+  auto Find(const Person &, int mask) -> std::vector<key_type> override;
+  auto ShowAll() -> std::vector<record *> override;
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
-  auto Clear() -> void;
+  auto Clear() -> void override;
   auto Update() -> void;
-  inline auto GetType() -> s21::BaseType { return s21::SBT; };
+  inline auto GetType() -> s21::BaseType override { return s21::SBT; };
 
  private:
   using func_t = std::function<void(Node *)>;

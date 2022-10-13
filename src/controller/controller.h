@@ -25,14 +25,14 @@ class Controller {
 
   auto Init(const BaseType type) -> void;
   auto Command(const std::string& in, std::string& out) -> void;
-  auto AddElement(const std::string key, const std::string surname,
-                  const std::string name, const int birth_year,
-                  const std::string city, const int balance, int erase_time)
+  auto AddElement(const std::string &key, const std::string &surname,
+                  const std::string &name, const int birth_year,
+                  const std::string &city, const int balance, int erase_time)
       -> bool;
   auto GetElement(const std::string& key) -> const std::string;
   auto ExistElement(const std::string& key) -> bool;
   auto DeleteElement(const std::string& key) -> bool;
-  auto UpdateElement(const std::string key,
+  auto UpdateElement(const std::string &key,
                      const std::optional<std::string> surname,
                      const std::optional<std::string> name,
                      const std::optional<int> birth_year,

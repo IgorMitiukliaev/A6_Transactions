@@ -18,6 +18,22 @@
             "options": {
                 "cwd": "${workspaceFolder}/src/"
             }
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "test_build"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/src/"
+            }
         }
     ]
 }

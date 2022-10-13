@@ -4,17 +4,19 @@ using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using s21::record_type;
 
-SBT::SelfBalancingBinarySearchTree() : BaseClass::BaseClass(), root_(nullptr) {}
+SBT::SelfBalancingBinarySearchTree() : BaseClass::BaseClass() {
+  root_ = nullptr;
+}
 
 SBT::~SelfBalancingBinarySearchTree() {
-  func_t f = [this](Node *p) {
-    if (p) {
-      if (p->data_.erase_time_ > 0 &&
-          p->data_.create_time_ + p->data_.erase_time_ < std::time(NULL))
-        Del(p->key_);
-    }
-  };
-  preOrder(root_, f);
+  if (root_) {
+    auto f = [](Node *p) {
+      delete p;
+      p = nullptr;
+    };
+    preOrder(root_, f);
+    root_ = nullptr;
+  }
 };
 
 auto SBT::FixHeight(Node *p) -> void {

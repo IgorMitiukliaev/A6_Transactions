@@ -15,8 +15,9 @@ auto Controller::Command(std::string command_str) -> std::string {
   std::vector<std::string> c(0), res_v;
   CommandRead(command_str, c);
   std::string res;
-  bool res_b;
+
   try {
+    bool res_b;
     if (c[0] == "SET") {
       int erase_time = -1;
       if (c[7] == "EX") erase_time = std::stoi(c[8]);
@@ -131,12 +132,12 @@ auto Controller::UploadData(const std::string& path) -> int {
   std::regex r_key(R"(^([[:alnum:]]+)\b)", std::regex::ECMAScript);
   std::regex r_str(R"(\"(.*?)\")", std::regex::ECMAScript);
   int row = 0;
-  bool read_on = true;
   if (filestream.is_open()) {
     std::string buffer = "", field = "", surname = "", key = "", name = "",
                 city = "";
-    int birth_year = 0, balance = 0;
-    while (read_on && !filestream.eof()) {
+    int balance = 0;
+    while (!filestream.eof()) {
+      int birth_year = 0;
       std::getline(filestream, buffer);
 
       std::sregex_iterator it_num(buffer.begin(), buffer.end(), r_num);
@@ -190,9 +191,9 @@ auto Controller::ExportData(const std::string& path) -> int {
   return rows;
 };
 
-auto Controller::AddElement(const std::string key, const std::string surname,
-                            const std::string name, const int birth_year,
-                            const std::string city, const int balance,
+auto Controller::AddElement(const std::string& key, const std::string& surname,
+                            const std::string& name, const int birth_year,
+                            const std::string& city, const int balance,
                             int erase_time) -> bool {
   Person p(surname, name, birth_year, city, balance);
   record rec(p, std::time(NULL), erase_time, MASK_ALL);
@@ -216,7 +217,7 @@ auto Controller::DeleteElement(const std::string& key) -> bool {
   return model_->Del(key);
 }
 
-auto Controller::UpdateElement(const std::string key,
+auto Controller::UpdateElement(const std::string& key,
                                const std::optional<std::string> surname,
                                const std::optional<std::string> name,
                                const std::optional<int> birth_year,
@@ -296,9 +297,9 @@ auto Controller::ShowTTL(const std::string& key_ttl) -> std::string {
   std::string res = "(null)";
   record_nullable rec = model_->Get(key_ttl);
   if (rec) {
-    time_t create_time = model_->Get(key_ttl)->get().create_time_;
     int erase_time_ = model_->Get(key_ttl)->get().erase_time_;
     if (erase_time_ > 0) {
+      time_t create_time = model_->Get(key_ttl)->get().create_time_;
       int duration = (create_time + erase_time_) - std::time(NULL);
       res = std::to_string(duration);
     }
