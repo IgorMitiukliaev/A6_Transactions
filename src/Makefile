@@ -16,11 +16,9 @@ FILES = $(SBT).a\
 	./controller/controller.cc\
 	./main.cc
 
-FILES_HASH_TABLE = ./core/virtual_base.h \
-	./hash_table/hash_table.cc
+FILES_HASH_TABLE = ./hash_table/hash_table.cc
 
-FILES_SBT = ./core/virtual_base.h \
-	./self_balancing_binary_search_tree/self_balancing_binary_search_tree.cc
+FILES_SBT =	./self_balancing_binary_search_tree/self_balancing_binary_search_tree.cc
 
 FILES_FOR_TEST = ./test/test.cc\
 	$(FILES_SBT)\

@@ -16,9 +16,9 @@ namespace s21 {
 
 class SelfBalancingBinarySearchTree : public BaseClass {
  public:
-  struct Node {
-    explicit Node(record_type k)
-        : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {};
+  class Node {
+   public:
+    explicit Node(record_type k);
     key_type key_;
     record data_;
     Node *left_;

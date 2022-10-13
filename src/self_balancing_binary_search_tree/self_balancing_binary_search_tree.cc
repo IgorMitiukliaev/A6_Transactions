@@ -4,16 +4,16 @@ using Node = class s21::SelfBalancingBinarySearchTree::Node;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using s21::record_type;
 
+SBT::Node::Node(record_type k)
+    : key_{k.first}, data_{k.second}, left_{0}, right_(0), height_{1} {}
+
 SBT::SelfBalancingBinarySearchTree() : BaseClass::BaseClass() {
   root_ = nullptr;
 }
 
 SBT::~SelfBalancingBinarySearchTree() {
   if (root_) {
-    auto f = [](Node *p) {
-      delete p;
-      p = nullptr;
-    };
+    auto f = [](Node *p) { delete p; };
     preOrder(root_, f);
     root_ = nullptr;
   }
@@ -193,7 +193,6 @@ auto SBT::TTL(const key_type &k) -> int {
   int res = -1;
   if (node && node->data_.erase_time_ > 0) {
     time_t erase_time = node->data_.create_time_ + node->data_.erase_time_;
-    res = erase_time - std::time(0);
     res = static_cast<int>(erase_time - std::time(0));
   }
   return res;
@@ -215,10 +214,7 @@ auto SBT::ShowAll() -> std::vector<record *> {
 
 auto SBT::Clear() -> void {
   if (root_) {
-    auto f = [](Node *p) {
-      delete p;
-      p = nullptr;
-    };
+    auto f = [](Node *p) { delete p; };
     preOrder(root_, f);
     root_ = nullptr;
   }
@@ -257,8 +253,7 @@ auto SBT::preOrderFind(Node *p, const Person &person, int mask,
 auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
   bool res = true;
   Person &person_for_check = p->data_.person_;
-  if (res && mask & MASK_SURNAME &&
-      person_for_check.surname_ != person.surname_)
+  if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
     res = false;
   if (res && mask & MASK_NAME && person_for_check.name_ != person.name_)
     res = false;

@@ -135,9 +135,9 @@ auto Controller::UploadData(const std::string& path) -> int {
   if (filestream.is_open()) {
     std::string buffer = "", field = "", surname = "", key = "", name = "",
                 city = "";
-    int balance = 0;
+
     while (!filestream.eof()) {
-      int birth_year = 0;
+      int birth_year, balance;
       std::getline(filestream, buffer);
 
       std::sregex_iterator it_num(buffer.begin(), buffer.end(), r_num);
