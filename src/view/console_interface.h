@@ -24,6 +24,7 @@ private:
   auto SwitchType(int) -> void;
   auto Input() -> std::string;
   auto PressButton() -> void;
+  auto PrintAnswer(std::string) -> void;
 
   auto Invalid() -> void;
   std::string line_top = "╔════════════════════════════════════════════════════"

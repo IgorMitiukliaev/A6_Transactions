@@ -126,11 +126,12 @@ auto MainWindow::ShooseSecondCommand() -> void {
   if (src == "EXIT") {
     controller_->ClearStorage();
     std::system("clear");
+    Autors();
     FirstMenu();
     ShooseFirstType();
   } else {
     std::string answer = controller_->Command(src);
-    std::cout << answer << std::endl;
+    PrintAnswer(answer);
     PressButton();
   }
 }
@@ -138,7 +139,6 @@ auto MainWindow::ShooseSecondCommand() -> void {
 auto MainWindow::SwitchType(int type) -> void {
   std::system("clear");
   switch (type) {
-<<<<<<< HEAD
   case 1:
     controller_->Init(::Controller::HASH);
     SecondMenu();
@@ -151,25 +151,11 @@ auto MainWindow::SwitchType(int type) -> void {
     break;
   default:
     break;
-=======
-    case 1:
-      controller_->Init(::Controller::HASH);
-      ShooseSecondCommand();
-      break;
-    case 2:
-      controller_->Init(::Controller::SBT);
-      ShooseSecondCommand();
-      break;
-    default:
-      break;
->>>>>>> 59b4012b28a8eb6581e45f01dff48e0957aece4d
   }
 }
 
 auto MainWindow::Input() -> std::string {
   std::string str;
-  // std::cin.clear();
-  // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   if (!std::getline(std::cin, str)) {
     exit(0);
   } else {
@@ -182,11 +168,20 @@ auto MainWindow::Input() -> std::string {
 
 auto MainWindow::PressButton() -> void {
   std::cout << " <<<<  Press ENTER >>>>" << std::endl;
-  // std::string tmp;
-  if (std::cin.get() == '\n') {
-    ShooseSecondCommand();
-  } else {
+  std::string tmp1;
+  char tmp;
+  if (std::cin.get(tmp)) {
+    if (tmp == '\n') {
+      ShooseSecondCommand();
+    } else {
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      ShooseSecondCommand();
+    }
   }
+}
+
+auto MainWindow::PrintAnswer(std::string answer) -> void {
+  std::cout << style4 << answer << clear_csi_n;
 }
 
 auto MainWindow::Invalid() -> void {
