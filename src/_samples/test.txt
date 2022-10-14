@@ -1,0 +1,13 @@
+key1    "Vassiliev"  "Ivan Sanych"    2001    "New York"  55
+key2    "Иванов"  "Isaak Абрамович"          2015    "Astana"    100
+key3    "Vassiliev2"  "Ivan Sanych"    2002    "New York"  55
+key4    "Иванов2"  "Isaak Абрамович"          2014    "Astana"    100
+key5    "Vassiliev3"  "Ivan Sanych"    2003    "New York"  55
+key6    "Иванов3"  "Isaak Абрамович"          2013    "Astana"    100
+key7    "Vassiliev4"  "Ivan Sanych"    2004    "New York"  55
+key8    "Иванов4"  "Isaak Абрамович"          2012    "Astana"    100
+key9    "Vassiliev5"  "Ivan Sanych"    2005    "New York"  55
+key10    "Иванов5"  "Isaak Абрамович"          2011    "Astana"    100
+key11    "Vassiliev6"  "Ivan Sanych"    2006    "New York"  55
+key12    "Иванов6"  "Isaak Абрамович"          2010    "Astana"    100
+key12    "Иванов7"  "Isaak Абрамович"          2010    "Astana"    100
