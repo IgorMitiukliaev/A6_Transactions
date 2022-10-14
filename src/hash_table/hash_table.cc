@@ -52,6 +52,7 @@ auto HashTable::Del(const key_type& key) -> bool {
   if (del != nullptr) {
     del->state_ = false;
     result = true;
+    size_--;
   }
   return result;
 }
@@ -114,7 +115,8 @@ auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
   Update();
   std::vector<key_type> result(0);
   for (int i = 0; i < buffer_size_; i++) {
-    if (arr_[i] && arr_[i]->state_ && CheckNode(arr_[i]->key_, person, mask))
+    if (arr_[i] && arr_[i]->state_ && !arr_[i]->empty_ &&
+        CheckNode(arr_[i]->key_, person, mask))
       result.push_back(arr_[i]->key_);
   }
   return result;
@@ -248,6 +250,7 @@ auto HashTable::Add(const key_type& key, const record& data) -> bool {
   arr_[temp_pos]->empty_ = false;
 
   size_++;
+  size_all_non_nullptr_++;
   return true;
 }
 
