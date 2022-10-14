@@ -41,7 +41,7 @@ class HashTable : public BaseClass {
     bool state_;
     bool empty_;
 
-    Node(const record_type record)
+    explicit Node(const record_type record)
         : key_(record.first),
           data_(record.second),
           state_(true),
