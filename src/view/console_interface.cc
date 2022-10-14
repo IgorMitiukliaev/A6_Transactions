@@ -123,8 +123,9 @@ auto MainWindow::ShooseSecondCommand() -> void {
   std::system("clear");
   SecondMenu();
   std::string src = Input();
-  s21::StringToCase("up", src);
-  if (src == "EXIT") {
+  std::string buf(src);
+  s21::StringToCase("up", buf);
+  if (buf == "EXIT") {
     controller_->ClearStorage();
     std::system("clear");
     Autors();
