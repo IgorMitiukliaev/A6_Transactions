@@ -25,6 +25,11 @@ FILES_FOR_TEST = ./test/test.cc\
 	$(FILES_HASH_TABLE)
 
 SBT = self_balancing_binary_search_tree
+SUP = --suppress=
+suppress = $(SUP)passedByValue\
+	$(SUP)missingIncludeSystem\
+
+
 
 all: build
 	$(BD)transactions.out

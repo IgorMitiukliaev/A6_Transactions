@@ -119,15 +119,27 @@ auto Controller::Init(const BaseType type) -> void {
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  // UploadData("/home/igor/School_21/A6_Transactions-0/src/test.txt");
-  // std::cout << ShowKeys();
-  // AddElement("key3", "Verter", "Робот, просто робот", 1975, "Smartville",
-  // 100,
-  //            5);
-  // ShowAll();
-  // ExportData("/home/igor/School_21/A6_Transactions-0/src/new_test.txt");
-  // std::cout << ShowTTL("key3") << std::endl;
-  // ShowAll();
+  // s21::Person p1("Surname1", "Name1", 1970, "City1", 100);
+  // s21::Person p2("Surname2", "Name2", 1990, "City2", 0);
+  // s21::Person p3("Surname3", "Name3", 1993, "City3", 0);
+  // s21::Person p4("Surname4", "Name4", 1994, "City4", 0);
+  // s21::Person p5("Surname5", "Name5", 1995, "City5", 0);
+  // s21::record r(p1);
+  // model_->Set(s21::record_type("d", r));
+  // r = s21::record(p2);
+  // model_->Set(s21::record_type("e", r));
+  // r = s21::record(p3);
+  // model_->Set(s21::record_type("f", r));
+  // r = s21::record(p4);
+  // model_->Set(s21::record_type("g", r));
+  // r = s21::record(p5);
+  // model_->Set(s21::record_type("c", r));
+  // model_->Set(s21::record_type("b", r));
+  // model_->Set(s21::record_type("a", r));
+  // model_->Set(s21::record_type("k", r));
+  // std::string buf;
+  // ShowAll(buf);
+  // buf = ShowKeys();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {
