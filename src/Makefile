@@ -29,8 +29,6 @@ SUP = --suppress=
 suppress = $(SUP)passedByValue\
 	$(SUP)missingIncludeSystem\
 
-
-
 all: build
 	$(BD)transactions.out
 
@@ -52,12 +50,10 @@ gcov_report: clean
 	$(CC) --coverage -o testresult.out $(FILES_FOR_TEST) -lgtest -lpthread
 	./testresult.out
 	lcov -t "testresult" -o testresult.info -c -d . --no-external
-# lcov --remove testresult.info \
-# 	'*/containers/*'\
-# 	'*/matrix/*'\
-# 	'*/bonus_research.*'\
-# 	-o testresult_filtered.info
-	genhtml -o report testresult.info
+	lcov --remove testresult.info \
+		'*/*.h'\
+		-o testresult_filtered.info
+	genhtml -o report testresult_filtered.info
 	open ./report/index.html
 
 hash_table.a:
@@ -94,4 +90,4 @@ clean_hash:
 
 clean:
 	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno \
-	*.html *.out *.info *.dSYM report *.gch ./*/*.gch
+	*.html *.out *.info *.dSYM report *.gch ./*/*.gch leaks.txt

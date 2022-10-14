@@ -79,7 +79,6 @@ TEST(KEYS_SBT, test) {
   model_->Set(s21::record_type("key1", r));
   model_->Set(s21::record_type("key2", r_new));
   model_->Set(s21::record_type("key3", r_new));
-  // model_->Del("key3");
   std::vector<s21::key_type> res = model_->Keys();
   ASSERT_TRUE(res.size() == 3);
   ASSERT_TRUE((res[0] == "key1" && res[1] == "key2") ||

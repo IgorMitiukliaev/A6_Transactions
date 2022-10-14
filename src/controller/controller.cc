@@ -6,7 +6,7 @@
 #include <regex>
 #include <string>
 #include <vector>
-// foo bar "Иван Саныч" 55 "Q"
+
 using s21::Controller;
 using SBT = s21::SelfBalancingBinarySearchTree;
 using HashTable = s21::HashTable;
@@ -106,12 +106,7 @@ auto Controller::CommandRead(const std::string& command_str,
     std::string match_str =
         m_a[1].str().length() == 0 ? m_a[2].str() : m_a[1].str();
     command.push_back(match_str);
-    // std::cout << m_a[0].str() << " | " << m_a[1].str() << " | " <<
-    // m_a[2].str()
-    //           << " | " << std::endl;
   }
-  // std::for_each(command.begin(), command.end(),
-  //               [](auto el) { std::cout << el << std::endl; });
 };
 
 auto Controller::Init(const BaseType type) -> void {
@@ -119,27 +114,6 @@ auto Controller::Init(const BaseType type) -> void {
     model_ = new ::HashTable;
   else
     model_ = new ::SBT;
-  // s21::Person p1("Surname1", "Name1", 1970, "City1", 100);
-  // s21::Person p2("Surname2", "Name2", 1990, "City2", 0);
-  // s21::Person p3("Surname3", "Name3", 1993, "City3", 0);
-  // s21::Person p4("Surname4", "Name4", 1994, "City4", 0);
-  // s21::Person p5("Surname5", "Name5", 1995, "City5", 0);
-  // s21::record r(p1);
-  // model_->Set(s21::record_type("d", r));
-  // r = s21::record(p2);
-  // model_->Set(s21::record_type("e", r));
-  // r = s21::record(p3);
-  // model_->Set(s21::record_type("f", r));
-  // r = s21::record(p4);
-  // model_->Set(s21::record_type("g", r));
-  // r = s21::record(p5);
-  // model_->Set(s21::record_type("c", r));
-  // model_->Set(s21::record_type("b", r));
-  // model_->Set(s21::record_type("a", r));
-  // model_->Set(s21::record_type("k", r));
-  // std::string buf;
-  // ShowAll(buf);
-  // buf = ShowKeys();
 };
 
 auto Controller::UploadData(const std::string& path) -> int {
@@ -167,21 +141,6 @@ auto Controller::UploadData(const std::string& path) -> int {
       birth_year = std::stoi(m[4]);
       city = m[5];
       balance = std::stoi(m[6]);
-
-      // std::sregex_iterator it_num(buffer.begin(), buffer.end(), r_num);
-      // birth_year = stoi((it_num++)->str());
-      // balance = stoi((it_num)->str());
-
-      // std::sregex_iterator it_key(buffer.begin(), buffer.end(), r_key);
-      // key = it_key->str();
-
-      // std::sregex_iterator it_str(buffer.begin(), buffer.end(), r_str);
-      // surname = (it_str)->str(1);
-      // ++it_str;
-      // name = (it_str)->str(1);
-      // ++it_str;
-      // city = (it_str)->str(1);
-
       Person p(surname, name, birth_year, city, balance);
       std::cout << p.ShowData() << std::endl;
       record rec(p, std::time(NULL), -1, MASK_ALL);
@@ -195,7 +154,6 @@ auto Controller::UploadData(const std::string& path) -> int {
     std::cout << "Could not read file\n" << std::endl;
   }
   return rows;
-  // std::vector<record*> data = model_->ShowAll();
 };
 
 auto Controller::ExportData(const std::string& path) -> int {
