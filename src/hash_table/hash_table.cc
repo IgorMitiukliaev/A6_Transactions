@@ -106,7 +106,6 @@ auto HashTable::TTL(const key_type& key) -> int {
   int result = -1;
   if (node && node->data_.erase_time_ > 0) {
     time_t erase_time = node->data_.create_time_ + node->data_.erase_time_;
-    result = erase_time - std::time(0);
     result = static_cast<int>(erase_time - std::time(0));
   }
   return result;
@@ -130,16 +129,6 @@ auto HashTable::ShowAll() -> std::vector<record*> {
       result.push_back(&arr_[i]->data_);
     }
   }
-  return result;
-}
-
-auto HashTable::Upload(const std::string& path) -> size_t {
-  size_t result;
-  return result;
-}
-
-auto HashTable::Export(const std::string& path) -> size_t {
-  size_t result;
   return result;
 }
 
@@ -170,8 +159,7 @@ auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
   bool result = true;
   Node* node = FindRecord(key);
   Person& person_for_check = node->data_.person_;
-  if (result && mask & MASK_SURNAME &&
-      person_for_check.surname_ != person.surname_)
+  if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
     result = false;
   if (result && mask & MASK_NAME && person.name_ != person.name_)
     result = false;
@@ -196,10 +184,8 @@ auto HashTable::Resize() -> void {
   std::swap(arr_, arr_2);
   for (int i = 0; i < past_buffer_size_; i++) {
     if (arr_2[i] && !arr_2[i]->empty_ && arr_2[i]->state_)
-      Add(arr_2[i]->key_,
-          arr_2[i]->data_);  // добавляем элементы в новый массив
+      Add(arr_2[i]->key_, arr_2[i]->data_);
   }
-  // удаление предыдущего массива
   for (int i = 0; i < past_buffer_size_; i++)
     if (arr_2[i]) delete arr_2[i];
   delete[] arr_2;
@@ -215,75 +201,56 @@ auto HashTable::Rehash() -> void {
     if (arr_2[i] && arr_2[i]->state_ && !arr_2[i]->empty_)
       Add(arr_2[i]->key_, arr_2[i]->data_);
   }
-  // удаление предыдущего массива
   for (int i = 0; i < buffer_size_; i++)
     if (arr_2[i]) delete arr_2[i];
   delete[] arr_2;
 }
 
 auto HashTable::FindRecord(const key_type& key) -> Node* {
-  int h1 = Hash1(key);  // значение, отвечающее за начальную позицию
-  int h2 = Hash2(key);  // значение, ответственное за "шаг" по таблице
+  int h1 = Hash1(key);
+  int h2 = Hash2(key);
   int i = 0;
   while (!arr_[h1]->empty_ && i < buffer_size_) {
-    if (arr_[h1]->key_ == key && arr_[h1]->state_)
-      return arr_[h1];  // такой элемент есть
+    if (arr_[h1]->key_ == key && arr_[h1]->state_) return arr_[h1];
     i++;
     h1 = (h1 + i * h2) % buffer_size_;
-    // если у нас i >=  buffer_size_, значит мы уже обошли абсолютно все
-    // ячейки, именно для этого мы считаем i, иначе мы могли бы
-    // зациклиться.
   }
   return nullptr;
 }
 
 auto HashTable::Add(const key_type& key, const record& data) -> bool {
   if (size_ + 1 > int(rehash_size_ * buffer_size_)) {
-    // std::cout << "++++++++++++++++++++++++Resize!!!" << std::endl;
     Resize();
   } else if (size_all_non_nullptr_ > 2 * size_) {
-    // std::cout << "++++++++++++++++++++++++Rehash!!!" << std::endl;
-    Rehash();  // происходит рехеш, так как слишком много deleted-элементов
+    Rehash();
   }
   int h1 = Hash1(key);
   int h2 = Hash2(key);
   int i = 0;
-  int temp_pos = -1;  // запоминаем первый подходящий (удаленный) элемент
+  int temp_pos = -1;
 
   while (arr_[h1] && !arr_[h1]->empty_ && i < buffer_size_) {
-    // std::cout << "While()!!!" << std::endl;
-    if (arr_[h1]->key_ == key && arr_[h1]->state_)
-      return false;  // такой элемент уже есть, а значит его нельзя вставлять
-                     // повторно
+    if (arr_[h1]->key_ == key && arr_[h1]->state_) return false;
     if (arr_[h1]->key_ != "" && !arr_[h1]->state_) {
-      // std::cout << "Find place!" << std::endl;
-      // нашли место для нового элемента
       temp_pos = h1;
       break;
     }
     i++;
     h1 = (h1 + i * h2) % buffer_size_;
-    // std::cout << "new h1 " << h1 << std::endl;
   }
 
   if (temp_pos == -1) temp_pos = h1;
-  // std::cout << "=======fill Node #" << temp_pos << std::endl;
-  // if (arr_[temp_pos] != nullptr) {
   arr_[temp_pos]->key_ = key;
   arr_[temp_pos]->data_ = data;
   arr_[temp_pos]->state_ = true;
   arr_[temp_pos]->empty_ = false;
-  // }
 
-  size_++;  // и в любом случае мы увеличили количество элементов
-  // std::cout << "size_ " << size_ << std::endl;
+  size_++;
   return true;
 }
 
 auto HashTable::Hash1(const std::string& key) -> int {
   return (std::hash<std::string>{}(key)) % buffer_size_;
-  // ключи должны быть взаимопросты, используем числа <размер таблицы> плюс и
-  // минус один.
 }
 
 auto HashTable::Hash2(const std::string& key) -> int {
