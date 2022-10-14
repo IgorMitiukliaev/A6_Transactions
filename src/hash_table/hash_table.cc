@@ -52,6 +52,7 @@ auto HashTable::Del(const key_type& key) -> bool {
   if (del != nullptr) {
     del->state_ = false;
     result = true;
+    size_--;
   }
   return result;
 }
@@ -249,6 +250,7 @@ auto HashTable::Add(const key_type& key, const record& data) -> bool {
   arr_[temp_pos]->empty_ = false;
 
   size_++;
+  size_all_non_nullptr_++;
   return true;
 }
 
