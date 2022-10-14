@@ -159,10 +159,10 @@ auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
   bool flag = true;
   Node* node = FindRecord(key);
   if (node && !node->empty_ && node->state_) {
-    Person& person_for_check = node->data_.person_;
+    const Person& person_for_check = node->data_.person_;
     if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
       flag = false;
-    if (result && mask & MASK_NAME && person.name_ != person.name_)
+    if (result && mask & MASK_NAME && person_for_check.name_ != person.name_)
       flag = false;
     if (result && mask & MASK_BALANCE &&
         person_for_check.balance_ != person.balance_)
