@@ -62,11 +62,11 @@ auto HashTable::Update(const record_type& record) -> bool {
     if (mask & MASK_SURNAME)
       person_for_update.surname_ = record.second.person_.surname_;
     if (mask & MASK_NAME) person_for_update.name_ = record.second.person_.name_;
-    if (mask & MASK_BIRTH_YEAR)
-      person_for_update.balance_ = record.second.person_.balance_;
-    if (mask & MASK_CITY)
-      person_for_update.birth_year_ = record.second.person_.birth_year_;
     if (mask & MASK_BALANCE)
+      person_for_update.balance_ = record.second.person_.balance_;
+    if (mask & MASK_BIRTH_YEAR)
+      person_for_update.birth_year_ = record.second.person_.birth_year_;
+    if (mask & MASK_CITY)
       person_for_update.city_ = record.second.person_.city_;
   }
   return result;
@@ -154,13 +154,13 @@ auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
     result = false;
   if (result && mask & MASK_NAME && person.name_ != person.name_)
     result = false;
-  if (result && mask & MASK_BIRTH_YEAR &&
+  if (result && mask & MASK_BALANCE &&
       person_for_check.balance_ != person.balance_)
     result = false;
-  if (result && mask & MASK_CITY &&
+  if (result && mask & MASK_BIRTH_YEAR &&
       person_for_check.birth_year_ != person.birth_year_)
     result = false;
-  if (result && mask & MASK_BALANCE && person_for_check.city_ != person.city_)
+  if (result && mask & MASK_CITY && person_for_check.city_ != person.city_)
     result = false;
   return result;
 }

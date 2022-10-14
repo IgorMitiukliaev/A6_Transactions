@@ -26,12 +26,12 @@ FILES_FOR_TEST = ./test/test.cc\
 
 SBT = self_balancing_binary_search_tree
 
-all:
+all: build
+	$(BD)transactions.out
 
 build: clean $(SBT).a hash_table.a
 	mkdir -p $(BD)
 	$(CC) $(LDFLAGS) $(FILES) -o $(BD)transactions.out -L. -l$(SBT) -lhash_table
-	$(BD)transactions.out
 
 test_build: 
 ifeq ($(OS), Darwin)

@@ -35,9 +35,9 @@ class Controller {
   auto UpdateElement(const std::string &key,
                      const std::optional<std::string> surname,
                      const std::optional<std::string> name,
-                     const std::optional<int> birth_year,
+                     const std::optional<std::string> birth_year,
                      const std::optional<std::string> city,
-                     const std::optional<int> balance) -> bool;
+                     const std::optional<std::string> balance) -> bool;
   auto ShowKeys() -> std::string;
   auto RenameKey(const key_type&, const key_type&) -> bool;
   auto FindElement(const std::optional<std::string> surname,

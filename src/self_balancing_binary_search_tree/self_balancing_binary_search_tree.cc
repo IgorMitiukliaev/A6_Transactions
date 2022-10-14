@@ -159,11 +159,11 @@ auto SBT::Update(const record_type &rec) -> bool {
     if (mask & MASK_SURNAME)
       person_for_update.surname_ = rec.second.person_.surname_;
     if (mask & MASK_NAME) person_for_update.name_ = rec.second.person_.name_;
-    if (mask & MASK_BIRTH_YEAR)
+    if (mask & MASK_BALANCE)
       person_for_update.balance_ = rec.second.person_.balance_;
-    if (mask & MASK_CITY)
+    if (mask & MASK_BIRTH_YEAR)
       person_for_update.birth_year_ = rec.second.person_.birth_year_;
-    if (mask & MASK_BALANCE) person_for_update.city_ = rec.second.person_.city_;
+    if (mask & MASK_CITY) person_for_update.city_ = rec.second.person_.city_;
   }
   return res;
 };
@@ -246,8 +246,8 @@ auto SBT::preOrderFind(Node *p, const Person &person, int mask,
                        std::vector<key_type> &res) -> void {
   if (p == nullptr) return;
   if (checkNode(p, person, mask)) res.push_back(p->key_);
-  preOrder(p->left_, res);
-  preOrder(p->right_, res);
+  preOrderFind(p->left_, person, mask, res);
+  preOrderFind(p->right_, person, mask, res);
 }
 
 auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
@@ -257,13 +257,13 @@ auto SBT::checkNode(Node *p, const Person &person, int mask) -> bool {
     res = false;
   if (res && mask & MASK_NAME && person_for_check.name_ != person.name_)
     res = false;
-  if (res && mask & MASK_BIRTH_YEAR &&
+  if (res && mask & MASK_BALANCE &&
       person_for_check.balance_ != person.balance_)
     res = false;
-  if (res && mask & MASK_CITY &&
+  if (res && mask & MASK_BIRTH_YEAR &&
       person_for_check.birth_year_ != person.birth_year_)
     res = false;
-  if (res && mask & MASK_BALANCE && person_for_check.city_ != person.city_)
+  if (res && mask & MASK_CITY && person_for_check.city_ != person.city_)
     res = false;
   return res;
 }
