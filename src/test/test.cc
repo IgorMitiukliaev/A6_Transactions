@@ -251,43 +251,41 @@ TEST(TTL_HashTable, test) {
   ASSERT_FALSE(model_->Exist("key2"));
 }
 
-// TEST(FIND_HashTable, test) {
-//   std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::HashTable>();
-//   s21::Person p("Surname", "Name Name", 1970, "City", 100);
-//   s21::Person p_find("NoName", "Name NoName", 1970, "City", 100);
-//   s21::record r(p);
-//   model_->Set(s21::record_type("key1", r));
-//   std::vector<std::string> res = model_->Find(p_find, 0b11111);
-//   ASSERT_TRUE(res.size() == 0);
-//   res = model_->Find(p_find, 0b00111);
-//   ASSERT_TRUE(res.size() == 1);
-// }
+TEST(FIND_HashTable, test) {
+  std::unique_ptr<s21::BaseClass> model_(new ::HashTable());
+  s21::Person p("Surname", "Name Name", 1970, "City", 100);
+  s21::Person p_find("NoName", "Name NoName", 1970, "City", 100);
+  s21::record r(p);
+  model_->Set(s21::record_type("key1", r));
+  std::vector<std::string> res = model_->Find(p_find, 0b11111);
+  ASSERT_TRUE(res.size() == 0);
+  res = model_->Find(p_find, 0b00111);
+  ASSERT_TRUE(res.size() == 1);
+}
 
-// TEST(SHOWALL_HashTable, test) {
-//   std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::HashTable>();
-//   s21::Person p1("Surname1", "Name1", 1970, "City1", 100);
-//   s21::Person p2("Surname2", "Name2", 1990, "City2", 0);
-//   s21::Person p3("Surname3", "Name3", 1993, "City3", 0);
-//   s21::Person p4("Surname4", "Name4", 1994, "City4", 0);
-//   s21::Person p5("Surname5", "Name5", 1995, "City5", 0);
-//   s21::record r(p1);
-//   model_->Set(s21::record_type("d", r));
-//   r = s21::record(p2);
-//   model_->Set(s21::record_type("e", r));
-//   r = s21::record(p3);
-//   model_->Set(s21::record_type("f", r));
-//   r = s21::record(p4);
-//   model_->Set(s21::record_type("g", r));
-//   r = s21::record(p5);
-//   model_->Set(s21::record_type("c", r));
-//   model_->Set(s21::record_type("b", r));
-//   model_->Set(s21::record_type("a", r));
-//   model_->Set(s21::record_type("k", r));
-//   std::vector<s21::record *> res = model_->ShowAll();
-//   std::for_each(res.begin(), res.end(),
-//                 [](auto el) { std::cout << el << std::endl; });
-//   ASSERT_TRUE(res.size() == 8);
-// }
+TEST(SHOWALL_HashTable, test) {
+  std::unique_ptr<s21::BaseClass> model_(new ::HashTable());
+  s21::Person p1("Surname1", "Name1", 1970, "City1", 100);
+  s21::Person p2("Surname2", "Name2", 1990, "City2", 0);
+  s21::Person p3("Surname3", "Name3", 1993, "City3", 0);
+  s21::Person p4("Surname4", "Name4", 1994, "City4", 0);
+  s21::Person p5("Surname5", "Name5", 1995, "City5", 0);
+  s21::record r(p1);
+  model_->Set(s21::record_type("d", r));
+  r = s21::record(p2);
+  model_->Set(s21::record_type("e", r));
+  r = s21::record(p3);
+  model_->Set(s21::record_type("f", r));
+  r = s21::record(p4);
+  model_->Set(s21::record_type("g", r));
+  r = s21::record(p5);
+  model_->Set(s21::record_type("c", r));
+  model_->Set(s21::record_type("b", r));
+  model_->Set(s21::record_type("a", r));
+  model_->Set(s21::record_type("k", r));
+  std::vector<s21::record *> res = model_->ShowAll();
+  ASSERT_TRUE(res.size() == 8);
+}
 
 TEST(CLEAR_HashTable, test) {
   std::unique_ptr<s21::BaseClass> model_ = std::make_unique<::HashTable>();
