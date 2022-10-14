@@ -14,7 +14,7 @@ namespace s21 {
 class HashTable : public BaseClass {
  public:
   HashTable();
-  ~HashTable();
+  ~HashTable() override;
   auto Set(const record_type &) -> bool override;
   auto Get(const key_type &) -> record_nullable override;
   auto Exist(const key_type &) -> bool override;
@@ -28,20 +28,19 @@ class HashTable : public BaseClass {
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void override;
+  auto Update() -> void;
   inline auto GetType() -> s21::BaseType override { return s21::HASH; };
 
  private:
-  static const int default_size_ = 8;  // начальный размер нашей таблицы
+  static const int default_size_ = 8;
   constexpr static const double rehash_size_ = 0.75;
-  // коэффициент, при котором произойдет увеличение таблицы
 
   struct Node {
     key_type key_;
     record data_;
-    bool state_;  // если значение флага state = false, значит элемент массива
-                  // был удален (deleted)
-    bool empty_;  // если значение флага empty = true, значит элемент массива
-                  // пустой
+    bool state_;
+    bool empty_;
+
     Node(const record_type record)
         : key_(record.first),
           data_(record.second),
@@ -53,12 +52,10 @@ class HashTable : public BaseClass {
     Node() : key_(""), data_(), state_(true), empty_(true) {}
   };
 
-  Node **arr_;  // соответственно в массиве будут хранится структуры Node*
-  int size_;  // сколько элементов у нас сейчас в массиве (без учета deleted)
-  int buffer_size_;  // размер самого массива, сколько памяти выделено под
-                     // хранение нашей таблицы
-  int size_all_non_nullptr_;  // сколько элементов у нас сейчас в массиве (с
-                              // учетом deleted)
+  Node **arr_;
+  int size_;
+  int buffer_size_;
+  int size_all_non_nullptr_;
 
   auto Hash1(const std::string &s) -> int;
   auto Hash2(const std::string &s) -> int;

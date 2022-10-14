@@ -7,7 +7,7 @@ using s21::MainWindow;
 using Controller = s21::Controller;
 using BaseType = Controller::BaseType;
 
-MainWindow::MainWindow() { controller_ = std::make_unique<s21::Controller>(); }
+MainWindow::MainWindow() : controller_(std::make_unique<s21::Controller>()) {}
 
 auto MainWindow::Show() -> void {
   Autors();
@@ -70,7 +70,7 @@ auto MainWindow::SecondMenu() -> void {
   std::cout << "║ DEL <key>                                                    "
                "                        Delete the record║"
             << std::endl;
-  std::cout << "║ UPDATE <key> <surname> <name> <year> <city> <coins> *        "
+  std::cout << "║ UPDATE <key> <surname> <name> <year> <city> <coins>          "
                "                     Update elements data║"
             << std::endl;
   std::cout << "║ KEYS                                                         "
@@ -82,7 +82,7 @@ auto MainWindow::SecondMenu() -> void {
   std::cout << "║ TTL <key>                                                    "
                "                            Show elements║"
             << std::endl;
-  std::cout << "║ FIND <surname> <name> <year> <city> <coins> *                "
+  std::cout << "║ FIND <surname> <name> <year> <city> <coins>                  "
                "                             Find element║"
             << std::endl;
   std::cout << "║ SHOWALL                                                      "
@@ -111,7 +111,7 @@ auto MainWindow::SecondMenu() -> void {
 auto MainWindow::ShooseFirstType() -> void {
   int res = 0;
   if (std::cin >> res) {
-    if (res < 0 && res > 3) {
+    if (res < 0 || res > 3) {
       Invalid();
       ShooseFirstType();
     }
@@ -123,6 +123,7 @@ auto MainWindow::ShooseSecondCommand() -> void {
   std::system("clear");
   SecondMenu();
   std::string src = Input();
+  s21::StringToCase("up", src);
   if (src == "EXIT") {
     controller_->ClearStorage();
     std::system("clear");
@@ -139,18 +140,16 @@ auto MainWindow::ShooseSecondCommand() -> void {
 auto MainWindow::SwitchType(int type) -> void {
   std::system("clear");
   switch (type) {
-  case 1:
-    controller_->Init(::Controller::HASH);
-    SecondMenu();
-    ShooseSecondCommand();
-    break;
-  case 2:
-    controller_->Init(::Controller::SBT);
-    SecondMenu();
-    ShooseSecondCommand();
-    break;
-  default:
-    break;
+    case 1:
+      controller_->Init(::Controller::HASH);
+      ShooseSecondCommand();
+      break;
+    case 2:
+      controller_->Init(::Controller::SBT);
+      ShooseSecondCommand();
+      break;
+    default:
+      break;
   }
 }
 
@@ -168,7 +167,6 @@ auto MainWindow::Input() -> std::string {
 
 auto MainWindow::PressButton() -> void {
   std::cout << " <<<<  Press ENTER >>>>" << std::endl;
-  std::string tmp1;
   char tmp;
   if (std::cin.get(tmp)) {
     if (tmp == '\n') {
@@ -180,10 +178,22 @@ auto MainWindow::PressButton() -> void {
   }
 }
 
-auto MainWindow::PrintAnswer(std::string answer) -> void {
+auto MainWindow::PrintAnswer(const std::string &answer) -> void {
   std::cout << style4 << answer << clear_csi_n;
 }
 
 auto MainWindow::Invalid() -> void {
   std::cout << "ERROR : try again" << std::endl;
+}
+
+auto s21::StringToCase(const std::string &x_case, std::string &src) -> void {
+  std::function<void(char &)> func_up = [](char &ch) { ch = std::toupper(ch); };
+  std::function<void(char &)> func_low = [](char &ch) {
+    ch = std::tolower(ch);
+  };
+  if (x_case == "up") {
+    std::for_each(src.begin(), src.end(), func_up);
+  } else if (x_case == "low") {
+    std::for_each(src.begin(), src.end(), func_low);
+  }
 }

@@ -8,12 +8,12 @@
 
 namespace s21 {
 class MainWindow {
-public:
+ public:
   MainWindow();
   ~MainWindow() = default;
   auto Show() -> void;
 
-private:
+ private:
   std::unique_ptr<Controller> controller_ = nullptr;
 
   auto Autors() -> void;
@@ -24,11 +24,13 @@ private:
   auto SwitchType(int) -> void;
   auto Input() -> std::string;
   auto PressButton() -> void;
-  auto PrintAnswer(std::string) -> void;
+  auto PrintAnswer(const std::string &) -> void;
 
   auto Invalid() -> void;
-  std::string line_top = "╔════════════════════════════════════════════════════"
-                         "═══════════════════════════════════════════════════╗";
+
+  std::string line_top =
+      "╔════════════════════════════════════════════════════"
+      "═══════════════════════════════════════════════════╗";
   std::string line_bottom =
       "╚═══════════════════════════════════════════════════════════════════════"
       "════════════════════════════════╝";
@@ -43,6 +45,9 @@ private:
   std::string style3 = "\u001b[1;48;5;117;38;5;20m";
   std::string style4 = "\u001b[1;38;5;117m";
 };
-} // namespace s21
 
-#endif //  SRC_VIEW_CONSOLE_INTERFACE_H_
+auto StringToCase(const std::string &x_case, std::string &src) -> void;
+
+}  // namespace s21
+
+#endif  //  SRC_VIEW_CONSOLE_INTERFACE_H_
