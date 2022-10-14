@@ -28,6 +28,7 @@ class HashTable : public BaseClass {
   auto Upload(const std::string &) -> size_t;
   auto Export(const std::string &) -> size_t;
   auto Clear() -> void override;
+  auto Update() -> void;
   inline auto GetType() -> s21::BaseType override { return s21::HASH; };
 
  private:

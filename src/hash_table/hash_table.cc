@@ -21,6 +21,7 @@ HashTable::~HashTable() {
 }
 
 auto HashTable::Set(const record_type& record) -> bool {
+  Update();
   bool result = false;
   Node* temp = FindRecord(record.first);
   if (temp == nullptr) {
@@ -31,6 +32,7 @@ auto HashTable::Set(const record_type& record) -> bool {
 
 auto HashTable::Get(const key_type& key)
     -> std::optional<std::reference_wrapper<record>> {
+  Update();
   Node* get_node = FindRecord(key);
   return get_node
              ? std::optional<std::reference_wrapper<record>>{get_node->data_}
@@ -38,6 +40,7 @@ auto HashTable::Get(const key_type& key)
 }
 
 auto HashTable::Exist(const key_type& key) -> bool {
+  Update();
   bool result = false;
   if (FindRecord(key) != nullptr) result = true;
   return result;
@@ -54,6 +57,7 @@ auto HashTable::Del(const key_type& key) -> bool {
 }
 
 auto HashTable::Update(const record_type& record) -> bool {
+  Update();
   Node* node_for_update = FindRecord(record.first);
   bool result = static_cast<bool>(node_for_update);
   if (result) {
@@ -73,6 +77,7 @@ auto HashTable::Update(const record_type& record) -> bool {
 }
 
 auto HashTable::Keys() -> std::vector<key_type> {
+  Update();
   std::vector<key_type> result(0);
   for (int i = 0; i < buffer_size_; i++) {
     if (arr_[i] && arr_[i]->state_ && !arr_[i]->empty_)
@@ -83,6 +88,7 @@ auto HashTable::Keys() -> std::vector<key_type> {
 
 auto HashTable::Rename(const key_type& old_key, const key_type& new_key)
     -> bool {
+  Update();
   bool result = false;
   Node* node_for_rename = FindRecord(old_key);
   if (static_cast<bool>(node_for_rename) && FindRecord(new_key) == nullptr) {
@@ -95,6 +101,7 @@ auto HashTable::Rename(const key_type& old_key, const key_type& new_key)
 }
 
 auto HashTable::TTL(const key_type& key) -> int {
+  Update();
   Node* node = FindRecord(key);
   int result = -1;
   if (node && node->data_.erase_time_ > 0) {
@@ -106,6 +113,7 @@ auto HashTable::TTL(const key_type& key) -> int {
 }
 
 auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
+  Update();
   std::vector<key_type> result(0);
   for (int i = 0; i < buffer_size_; i++) {
     if (arr_[i] && arr_[i]->state_ && CheckNode(arr_[i]->key_, person, mask))
@@ -115,6 +123,7 @@ auto HashTable::Find(const Person& person, int mask) -> std::vector<key_type> {
 }
 
 auto HashTable::ShowAll() -> std::vector<record*> {
+  Update();
   std::vector<record*> result(0);
   for (int i = 0; i < buffer_size_; i++) {
     if (arr_[i] && arr_[i]->state_ && !arr_[i]->empty_) {
@@ -142,6 +151,18 @@ auto HashTable::Clear() -> void {
     }
   }
   size_ = 0;
+}
+
+auto HashTable::Update() -> void {
+  for (int i = 0; i < buffer_size_; i++) {
+    if (!arr_[i]->empty_ && arr_[i]->state_ && arr_[i]->data_.erase_time_ > 0) {
+      Node* node = FindRecord(arr_[i]->key_);
+      if (node &&
+          node->data_.create_time_ + node->data_.erase_time_ < std::time(0)) {
+        Del(node->key_);
+      }
+    }
+  }
 }
 
 auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
@@ -242,7 +263,7 @@ auto HashTable::Add(const key_type& key, const record& data) -> bool {
     }
     i++;
     h1 = (h1 + i * h2) % buffer_size_;
-    std::cout << "new h1 " << h1 << std::endl;
+    // std::cout << "new h1 " << h1 << std::endl;
   }
 
   if (temp_pos == -1) temp_pos = h1;
