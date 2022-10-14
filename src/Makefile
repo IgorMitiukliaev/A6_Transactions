@@ -90,3 +90,4 @@ clean_hash:
 clean:
 	rm -rf build tests.out *.a *.o *.cfg *.gcda *.gcno \
 	*.html *.out *.info *.dSYM report *.gch ./*/*.gch
+	
