@@ -13,6 +13,27 @@ HashTable::HashTable() {
   }
 }
 
+HashTable::HashTable(const HashTable& h)
+    : buffer_size_(h.buffer_size_),
+      size_(h.size_),
+      size_all_non_nullptr_(h.size_all_non_nullptr_) {
+  arr_ = new Node*[buffer_size_];
+  for (int i = 0; i < buffer_size_; i++) {
+    arr_[i] = new Node(*h.arr_[i]);
+  }
+}
+
+auto HashTable::operator=(const HashTable& h) -> HashTable& {
+  buffer_size_ = h.buffer_size_;
+  size_ = h.size_;
+  size_all_non_nullptr_ = h.size_all_non_nullptr_;
+  for (int i = 0; i < buffer_size_; i++) {
+    delete arr_;
+    arr_[i] = new Node(*h.arr_[i]);
+  }
+  return *this;
+}
+
 HashTable::~HashTable() {
   for (int i = 0; i < buffer_size_; i++) {
     if (arr_[i] != nullptr) delete arr_[i];

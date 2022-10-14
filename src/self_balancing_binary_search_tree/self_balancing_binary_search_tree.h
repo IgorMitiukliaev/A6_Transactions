@@ -52,17 +52,13 @@ class SelfBalancingBinarySearchTree : public BaseClass {
   }
 
   auto FixHeight(Node *p) -> void;
-  auto RotateRight(Node *p) -> Node *;  // правый поворот вокруг p
-  auto RotateLeft(Node *p) -> Node *;  // левый поворот вокруг p
-  auto Balance(Node *p) -> Node *;     // балансировка узла p
-  auto Insert(Node *p, record_type k)
-      -> Node *;  // вставка ключа k в дерево с корнем p
-  auto FindMin(Node *p)
-      -> Node *;  // поиск узла с минимальным ключом в дереве p
-  auto RemoveMin(Node *p)
-      -> Node *;  // удаление узла с минимальным ключом из дерева p
-  auto Remove(Node *p, key_type k, bool &)
-      -> Node *;  // удаление ключа k из дерева p
+  auto RotateRight(Node *p) -> Node *;
+  auto RotateLeft(Node *p) -> Node *;
+  auto Balance(Node *p) -> Node *;
+  auto Insert(Node *p, record_type k) -> Node *;
+  auto FindMin(Node *p) -> Node *;
+  auto RemoveMin(Node *p) -> Node *;
+  auto Remove(Node *p, key_type k, bool &) -> Node *;
   auto FindRecord(Node *p, key_type k) -> Node *;
   auto preOrder(Node *p, std::vector<key_type> &res) -> void;
   auto preOrder(Node *p, std::vector<record *> &res) -> void;

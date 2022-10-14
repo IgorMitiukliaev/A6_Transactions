@@ -79,7 +79,6 @@ TEST(KEYS_SBT, test) {
   model_->Set(s21::record_type("key1", r));
   model_->Set(s21::record_type("key2", r_new));
   model_->Set(s21::record_type("key3", r_new));
-  // model_->Del("key3");
   std::vector<s21::key_type> res = model_->Keys();
   ASSERT_TRUE(res.size() == 3);
   ASSERT_TRUE((res[0] == "key1" && res[1] == "key2") ||
@@ -271,18 +270,18 @@ TEST(SHOWALL_HashTable, test) {
   s21::Person p4("Surname4", "Name4", 1994, "City4", 0);
   s21::Person p5("Surname5", "Name5", 1995, "City5", 0);
   s21::record r(p1);
-  model_->Set(s21::record_type("d", r));
+  model_->Set(s21::record_type("dasdfgghhj", r));
   r = s21::record(p2);
-  model_->Set(s21::record_type("e", r));
+  model_->Set(s21::record_type("easdfgghhj", r));
   r = s21::record(p3);
-  model_->Set(s21::record_type("f", r));
+  model_->Set(s21::record_type("fasdfgghhj", r));
   r = s21::record(p4);
-  model_->Set(s21::record_type("g", r));
+  model_->Set(s21::record_type("gasdfgghhj", r));
   r = s21::record(p5);
-  model_->Set(s21::record_type("c", r));
-  model_->Set(s21::record_type("b", r));
-  model_->Set(s21::record_type("a", r));
-  model_->Set(s21::record_type("k", r));
+  model_->Set(s21::record_type("casdfgghhj", r));
+  model_->Set(s21::record_type("basdfgghhj", r));
+  model_->Set(s21::record_type("aasdfgghhj", r));
+  model_->Set(s21::record_type("kasdfgghhj", r));
   std::vector<s21::record *> res = model_->ShowAll();
   ASSERT_TRUE(res.size() == 8);
 }

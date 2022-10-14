@@ -14,7 +14,9 @@ namespace s21 {
 class HashTable : public BaseClass {
  public:
   HashTable();
+  HashTable(const HashTable &);
   ~HashTable() override;
+  auto operator=(const HashTable &) -> HashTable &;
   auto Set(const record_type &) -> bool override;
   auto Get(const key_type &) -> record_nullable override;
   auto Exist(const key_type &) -> bool override;
@@ -50,12 +52,13 @@ class HashTable : public BaseClass {
     Node(const key_type &key, const record &data)
         : key_(key), data_(data), state_(true), empty_(false) {}
     Node() : key_(""), data_(), state_(true), empty_(true) {}
+    Node(const Node &n)
+        : key_(n.key_), data_(n.data_), state_(true), empty_(true){};
   };
-
-  Node **arr_;
-  int size_;
-  int buffer_size_;
-  int size_all_non_nullptr_;
+  Node **arr_ = nullptr;
+  int size_ = 0;
+  int buffer_size_ = 0;
+  int size_all_non_nullptr_ = 0;
 
   auto Hash1(const std::string &s) -> int;
   auto Hash2(const std::string &s) -> int;
