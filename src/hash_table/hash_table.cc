@@ -70,8 +70,7 @@ auto HashTable::Update(const record_type& record) -> bool {
       person_for_update.balance_ = record.second.person_.balance_;
     if (mask & MASK_BIRTH_YEAR)
       person_for_update.birth_year_ = record.second.person_.birth_year_;
-    if (mask & MASK_CITY)
-      person_for_update.city_ = record.second.person_.city_;
+    if (mask & MASK_CITY) person_for_update.city_ = record.second.person_.city_;
   }
   return result;
 }
@@ -157,21 +156,24 @@ auto HashTable::Update() -> void {
 auto HashTable::CheckNode(const key_type& key, const Person& person, int mask)
     -> bool {
   bool result = true;
+  bool flag = true;
   Node* node = FindRecord(key);
-  Person& person_for_check = node->data_.person_;
-  if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
-    result = false;
-  if (result && mask & MASK_NAME && person.name_ != person.name_)
-    result = false;
-  if (result && mask & MASK_BALANCE &&
-      person_for_check.balance_ != person.balance_)
-    result = false;
-  if (result && mask & MASK_BIRTH_YEAR &&
-      person_for_check.birth_year_ != person.birth_year_)
-    result = false;
-  if (result && mask & MASK_CITY && person_for_check.city_ != person.city_)
-    result = false;
-  return result;
+  if (node && !node->empty_ && node->state_) {
+    Person& person_for_check = node->data_.person_;
+    if (mask & MASK_SURNAME && person_for_check.surname_ != person.surname_)
+      flag = false;
+    if (result && mask & MASK_NAME && person.name_ != person.name_)
+      flag = false;
+    if (result && mask & MASK_BALANCE &&
+        person_for_check.balance_ != person.balance_)
+      flag = false;
+    if (result && mask & MASK_BIRTH_YEAR &&
+        person_for_check.birth_year_ != person.birth_year_)
+      flag = false;
+    if (result && mask & MASK_CITY && person_for_check.city_ != person.city_)
+      flag = false;
+  }
+  return flag && result;
 }
 
 auto HashTable::Resize() -> void {
